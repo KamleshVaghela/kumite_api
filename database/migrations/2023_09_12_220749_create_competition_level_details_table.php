@@ -13,15 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('competition_level_masters', function (Blueprint $table) {
+        Schema::create('competition_level_details', function (Blueprint $table) {
             $table->id();
-
-            $table->string('level')->nullable(false);
-
-            $table->integer('user_id')->nullable(false);
-            $table->timestamp('last_modified');
-            $table->integer('last_modified_user_id')->nullable(false);
-            
             $table->timestamps();
         });
     }
@@ -33,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('competition_level_masters');
+        Schema::dropIfExists('competition_level_details');
     }
 };
