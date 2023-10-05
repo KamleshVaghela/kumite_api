@@ -14,5 +14,58 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome')->name('welcome');
+});
+// Route::get('/login', [App\Http\Controllers\UserController::class, "web_login"]);
+Route::group(['middleware' => 'web'], function () {
+    Route::controller(App\Http\Controllers\UserController::class)->group(function () {
+        Route::get('/login', 'web_login');
+        Route::post('/user/login', 'web_user_login')->name('user.web.login');
+    });
+    Route::group(['prefix'=>'admin',  'middleware' => 'auth:sanctum'], function() {
+        Route::controller(App\Http\Controllers\Admin\HomeController::class)->group(function () {
+            Route::get('/dashboard', 'index')->name('admin.dashboard');
+        });
+
+        Route::controller(App\Http\Controllers\Admin\CompetitionController::class)->group(function () {
+            Route::get('/competition', 'index')->name('admin.competition');
+            Route::get('/competition/create', 'create')->name('admin.competition.create');
+            Route::get('/competition/change_level/{level}', 'changeLevel')->name('admin.competition.change_level');
+            Route::get('/competition/board/{encrypted_comp_id}', 'boardIndex')->name('admin.board');
+            Route::get('/competition/board/{encrypted_comp_id}/report', 'boardReport')->name('admin.board.report');
+
+            Route::get('/competition/board/{encrypted_comp_id}/competition_details', 'competitionDetails')->name('admin.board.competition_details');
+            Route::post('/competition/board/{encrypted_comp_id}/competition_details', 'saveCompetitionDetails')->name('admin.board.save_competition_details');
+
+            Route::get('/competition/board/{encrypted_comp_id}/important_dates', 'importantDates')->name('admin.board.important_dates');
+            Route::post('/competition/board/{encrypted_comp_id}/important_dates', 'saveImportantDates')->name('admin.board.save_important_dates');
+
+            Route::get('/competition/board/{encrypted_comp_id}/fees_details', 'feesDetails')->name('admin.board.fees_details');
+            Route::post('/competition/board/{encrypted_comp_id}/fees_details', 'saveFeesDetails')->name('admin.board.save_fees_details');
+
+            Route::get('/competition/board/{encrypted_comp_id}/level_details', 'levelDetails')->name('admin.board.level_details');
+            Route::post('/competition/board/{encrypted_comp_id}/level_details', 'saveLevelDetails')->name('admin.board.save_level_details');
+
+            Route::get('/competition/board/{encrypted_comp_id}/result_details', 'resultDetails')->name('admin.board.result_details');
+            Route::post('/competition/board/{encrypted_comp_id}/result_details', 'saveResultDetails')->name('admin.board.save_result_details');
+
+            Route::get('/competition/board/{encrypted_comp_id}/bout_details', 'boutDetails')->name('admin.board.bout_details');
+            Route::post('/competition/board/{encrypted_comp_id}/bout_details', 'saveBoutDetails')->name('admin.board.save_bout_details');
+
+            Route::post('/competition/report', 'report')->name('admin.competition.report');
+            Route::post('/competition/store', 'store')->name('admin.competition.store');
+            Route::get('/competition/edit/{id}', 'edit')->name('admin.competition.edit');
+            Route::post('/competition/update/{id}', 'update')->name('admin.competition.update');
+        });
+        Route::controller(App\Http\Controllers\Admin\CompetitionBoutController::class)->group(function () {
+            Route::get('/competition/board/{encrypted_comp_id}/bout/index', 'index')->name('admin.board.bout');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/report', 'report')->name('admin.board.bout.report');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/create', 'create')->name('admin.board.bout.create');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/store', 'store')->name('admin.board.bout.save');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/show', 'show')->name('admin.board.bout.show');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/edit', 'edit')->name('admin.board.bout.edit');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/update', 'update')->name('admin.board.bout.update');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/destroy', 'destroy')->name('admin.board.bout.destroy');
+        });
+    });
 });

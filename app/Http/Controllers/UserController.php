@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Config;
+use Auth;
 
 class UserController extends Controller
 {
@@ -57,4 +58,32 @@ class UserController extends Controller
             'token' => $token
         ], 200);
     }
+    
+    public function web_login() {
+        return View('login');
+    }
+    
+    public function web_user_login(Request $request) {
+        // $check = $request->all();
+        // dd($check['password']);
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]);
+   
+        $credentials = $request->only('email', 'password');
+        if (Auth::attempt($credentials)) {
+            // return redirect()->intended('dashboard')
+            //             ->withSuccess('Signed in');
+            return redirect()->route('admin.dashboard')->with('error', 'Login Successfully');
+        }
+
+        // if(Auth::attempt(['email' => $check['email'], 'password' => Hash::make($check['password']),'status'=>'1' ])) {
+        //     return redirect()->route('welcome')->with('error', 'Login Successfully');
+        // }
+        else {
+            return back()->with('error', 'Invalid Credential');
+        }
+    }
+
 }
