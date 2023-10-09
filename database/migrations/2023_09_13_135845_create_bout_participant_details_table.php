@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('bout_participant_details', function (Blueprint $table) {
             $table->id();
+            $table->integer('competition_id')->nullable(false);
             $table->integer('bout_id')->nullable(false);
 
             $table->integer('participant_id')->nullable(false);

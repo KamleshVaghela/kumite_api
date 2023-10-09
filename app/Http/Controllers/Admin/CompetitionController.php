@@ -9,6 +9,9 @@ use App\Models\CompetitionModel;
 use App\Models\CompetitionPartModel;
 use App\Models\Participant;
 use App\Models\KarateKaModel;
+use App\Models\DefaultCategoryMaster;
+use App\Models\BoutParticipantDetail;
+use App\Models\Bout;
 use Auth;
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\DB;
@@ -162,9 +165,9 @@ class CompetitionController extends Controller
         $compModel->save();
     }
 
-    function refreshParticipantDetails($competition_part) {
+    function refreshParticipantDetails($competition_part, $competition, $compModel) {
 
-        $compModel = Competition::where('comp_id',$competition_part->COMP_ID)->first();
+        // $compModel = Competition::where('comp_id',$competition_part->COMP_ID)->first();
 
         $compParticipant = Participant::where('competition_id',$compModel->id)
         ->where('external_unique_id',$competition_part->PART_COMP_ID)
@@ -172,28 +175,50 @@ class CompetitionController extends Controller
 
         if(is_null($compParticipant)) {
             $karateKa = KarateKaModel::where('KARATE_KA_ID', $competition_part->KARATE_KA_ID)->first();
-
-            $compParticipant = new Participant();
-
-            $compParticipant->competition_id = $compModel->id;
-
-            $compParticipant->external_unique_id = $competition_part->PART_COMP_ID;
-            $compParticipant->external_coach_code = $competition_part->COMP_ID;
-
             if($karateKa) {
+                $compParticipant = new Participant();
+
+                $compParticipant->competition_id = $compModel->id;
+                $compParticipant->external_unique_id = $competition_part->PART_COMP_ID;
+                
+                if ($competition->TYPE == "ISC") {
+                    //Inter School
+                    $compParticipant->team = "School-$competition->TYPE-$karateKa->SM_ID";
+                } else if ($competition->TYPE == "IDJ") {
+                    //Inter Dojo
+                    $compParticipant->team = "Dojo-$competition->TYPE-$karateKa->DOJO_ID";
+                } else if ($competition->TYPE == "D") {
+                    //District
+                    $compParticipant->team = "Coach-$competition->TYPE-$karateKa->COACH_ID";
+                } else if ($competition->TYPE == "S") {
+                    //State
+                    $compParticipant->team = "District-$competition->TYPE-$karateKa->DIS_ID";
+                } else if ($competition->TYPE == "N") {
+                    //National
+                    $compParticipant->team = "District-$competition->TYPE-$karateKa->DIS_ID";
+                }            
+                // $compParticipant->team = 
+
                 $compParticipant->full_name = $karateKa->NAME.' '.$karateKa->L_NAME;
-            } else {
-                $compParticipant->full_name = 'N/A';
+                if($karateKa->TITLE =="Mr") {
+                    $compParticipant->gender = "Male";
+                } else {
+                    $compParticipant->gender = "Female";
+                }
+                $compParticipant->rank_id = $karateKa->RANK_ID;
+                $compParticipant->external_coach_code = $karateKa->COACH_ID;
+                    
+                
+        
+                $compParticipant->age = $competition_part->AGE;
+                $compParticipant->weight = $competition_part->WEIGHT;
+
+                $compParticipant->user_id = Auth::user()->id;
+                $compParticipant->last_modified = \Carbon\Carbon::now();
+                $compParticipant->last_modified_user_id = Auth::user()->id;
+
+                $compParticipant->save();
             }
-    
-            $compParticipant->age = $competition_part->AGE;
-            $compParticipant->weight = $competition_part->WEIGHT;
-
-            $compParticipant->user_id = Auth::user()->id;
-            $compParticipant->last_modified = \Carbon\Carbon::now();
-            $compParticipant->last_modified_user_id = Auth::user()->id;
-
-            $compParticipant->save();
         }        
     }
 
@@ -222,15 +247,20 @@ class CompetitionController extends Controller
 
         if($compParticipants->count() == 0) {
             foreach($competition_parts as $data) {
-                $this->refreshParticipantDetails($data);
+                $this->refreshParticipantDetails($data, $competition, $compModel);
             }
+            $compParticipants = Participant::where('competition_id',$compModel->id)->get();
         }
+        $bouts = Bout::where('competition_id',$compModel->id)->get();
+        $bout_participant_details = BoutParticipantDetail::where('competition_id',$compModel->id)->get();
 
         return View('admin.competition.board.report')
         ->with('decrypted_comp_id',$decrypted_comp_id)
         ->with('competition',$competition)
         ->with('competition_parts',$competition_parts)
-        ->with('compParticipants',$compParticipants);
+        ->with('compParticipants',$compParticipants)
+        ->with('bouts',$bouts)
+        ->with('bout_participant_details',$bout_participant_details);
     }
     
     public function competitionDetails($decrypted_comp_id, Request $request)
@@ -370,12 +400,51 @@ class CompetitionController extends Controller
 
     public function levelDetails($decrypted_comp_id, Request $request)
     {
+        $details_key = $request->query('details_key');
         
+        $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+
+        // $default_category = DefaultCategoryMaster::select('category_group')->distinct()->get();
+
+        return View('admin.competition.board.level_details',compact('details_key'))
+        ->with('decrypted_comp_id',$decrypted_comp_id)
+        // ->with('default_category',$default_category)
+        ->with('competition',$competition);
     }
 
     public function saveLevelDetails($decrypted_comp_id, Request $request)
     {
+        return response([
+            'data' => '',
+            'message' => 'Data successfully',
+            'alert-type' => 'success'
+        ], 200);
+    }
+
+    
+
+    public function clearData($decrypted_comp_id, Request $request)
+    {
+        $details_key = $request->query('details_key');
+
+        return View('admin.competition.board.clear_data',compact('details_key'))
+        ->with('decrypted_comp_id',$decrypted_comp_id);
+    }
+
+    public function saveClearData($decrypted_comp_id, Request $request)
+    {
+        // $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
         
+        $boutParticipantDetails = BoutParticipantDetail::where('competition_id',$compModel->id)->delete();
+        $bouts = Bout::where('competition_id',$compModel->id)->delete();
+        $participants = Participant::where('competition_id',$compModel->id)->delete();
+        
+        return response([
+            'data' => '',
+            'message' => 'Data delete successfully',
+            'alert-type' => 'success'
+        ], 200);
     }
 
     public function resultDetails($decrypted_comp_id, Request $request)
@@ -394,12 +463,76 @@ class CompetitionController extends Controller
         
         $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
 
+        $default_category = DefaultCategoryMaster::select('category_group')->distinct()->get();
+
         return View('admin.competition.board.bout_details',compact('details_key'))
         ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('default_category',$default_category)
         ->with('competition',$competition);
     }
     public function saveBoutDetails($decrypted_comp_id, Request $request)
     {
+        $request->validate([
+            'category_group' => 'required',
+        ]);
 
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+
+        $default_category = DefaultCategoryMaster::where('category_group',$request->category_group)->get();
+
+        foreach($default_category as $compCategory) {
+            $compBout = new Bout();
+
+            $compBout->competition_id = $compModel->id;
+            $compBout->gender = $compCategory->gender;
+            $compBout->category = $compCategory->category;
+
+            $compBout->from_age = $compCategory->from_age;
+            $compBout->to_age = $compCategory->to_age;
+
+            $compBout->from_weight = $compCategory->from_weight;
+            $compBout->to_weight = $compCategory->to_weight;
+
+            $compBout->user_id = Auth::user()->id;
+            $compBout->last_modified = \Carbon\Carbon::now();
+            $compBout->last_modified_user_id = Auth::user()->id;
+
+            $compBout->save();
+
+            $compBoutParticipants = Participant::where('competition_id',$compModel->id)->
+                where('gender',$compCategory->gender)->
+                where('age','>=',$compCategory->from_age)->
+                where('age','<=', $compCategory->to_age)->
+                where('weight','>=',$compCategory->from_weight)->
+                where('weight','<=', $compCategory->to_weight)->
+                when($compCategory->group_rank, function ($query, $group_rank) {
+                    if($group_rank == "WYO") {
+                        $query->whereIn('rank_id',array(1, 2, 3));
+                    } else if($group_rank == "GBP") {
+                        $query->whereIn('rank_id',array(4, 5, 6));
+                    } else {
+
+                    }
+                })->
+                get();
+
+            // dd($compBoutParticipants);
+            foreach($compBoutParticipants as $compParticipant) {
+                $compBoutParticipantDetail = new BoutParticipantDetail();
+                $compBoutParticipantDetail->competition_id = $compModel->id;
+                $compBoutParticipantDetail->bout_id = $compBout->id;
+                $compBoutParticipantDetail->participant_id = $compParticipant->id;
+                $compBoutParticipantDetail->participant_sequence = 1;
+                $compBoutParticipantDetail->user_id = Auth::user()->id;
+                $compBoutParticipantDetail->last_modified = \Carbon\Carbon::now();
+                $compBoutParticipantDetail->last_modified_user_id = Auth::user()->id;
+                $compBoutParticipantDetail->save();
+            }
+        }
+        return response([
+            'data' => '',
+            'message' => 'Bout Generated successfully',
+            'alert-type' => 'success'
+        ], 200);
     }
 }

@@ -13,25 +13,20 @@ use Config;
 
 class CompetitionBoutController extends Controller
 {
-    public function index($encrypted_comp_id)
+    public function index($decrypted_comp_id)
     {
-        $decrypted_comp_id = decrypt_val($encrypted_comp_id);
-        $competitionSql = "SELECT COMP_NAME FROM COMPETITION where COMP_ID=?";
-        $competition = DB::connection('rksys_app')->select($competitionSql,[$decrypted_comp_id])[0];
-        return View('admin.bout.index',compact('encrypted_comp_id'))
-        ->with('decrypted_comp_id',$decrypted_comp_id)
+        $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+        
+        return View('admin.bout.index',compact('decrypted_comp_id'))
         ->with('competition',$competition);
     }
 
-    public function report()
+    public function report($decrypted_comp_id)
     {
-        $decrypted_comp_id = decrypt_val($encrypted_comp_id);
-        $competitionSql = "SELECT * FROM COMPETITION where COMP_ID=?";
-        $competition = DB::connection('rksys_app')->select($competitionSql,[$decrypted_comp_id])[0];
-
-        return View('admin.bout.report',compact('encrypted_comp_id'))
-        ->with('decrypted_comp_id',$decrypted_comp_id)
-        ->with('competition',$competition);
+        // $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+        return View('admin.bout.report',compact('decrypted_comp_id'))
+        // ->with('competition',$competition)
+        ;
     }
 
     public function create()

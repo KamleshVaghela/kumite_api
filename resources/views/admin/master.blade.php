@@ -9,8 +9,13 @@
     <!-- CSS -->
     <!-- Add Material font (Roboto) and Material icon as needed -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Round" rel="stylesheet" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Two+Tone" rel="stylesheet" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Sharp" rel="stylesheet" crossorigin>
 
+    <link rel="stylesheet" href="https://unpkg.com/jquery-resizable-columns@0.2.3/dist/jquery.resizableColumns.css">
     {{-- <link href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" rel="stylesheet"> --}}
 
     <!-- Add Material CSS, replace Bootstrap CSS -->
@@ -63,6 +68,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.js"></script>
 
+    <script src="https://unpkg.com/jquery-resizable-columns@0.2.3/dist/jquery.resizableColumns.min.js"></script>
     <script src="{{ asset('static/select2/dist/js/select2.min.js') }}"></script>
     <script src="{{ asset('static/gijgo/dist/combined/js/gijgo.min.js') }}" type="text/javascript"></script>
 
@@ -82,6 +88,9 @@
         <script src="{{ asset('admin/bout.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board')
+        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    @endif
+    @if($route == 'admin.board.bout')
         <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
 </body>

@@ -151,7 +151,12 @@
           </p>
         </div>
         <div class="card-actions justify-content-end">
-          {{-- <button class="btn btn-icon" onclick="loadLoadDetails(this)" data-href="{{URL::to('admin/competition/board/'.encrypt_val($competition->COMP_ID))."/levelDetails"}}" type="button"><i class="material-icons">edit</i></button> --}}
+          {{-- <button class="btn btn-icon" onclick="loadDetails(this)" 
+            data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/level_details"}}" 
+            data-details_key="level_details"
+            type="button">
+            <i class="material-icons">edit</i>
+          </button> --}}
         </div>
       </div>
     </div>
@@ -165,26 +170,38 @@
             <tbody>
               <tr>
                 <th scope="row">Registration Count</th>
-                <td>{{ $competition_parts->count() }}</td>
+                <td>{{ $compParticipants->count() }} / {{ $competition_parts->count() }}</td>
               </tr>
               <tr>
                 <th scope="row">Participants</th>
-                <td>{{ $compParticipants->count() }}</td>
+                <td>{{ $bout_participant_details->count() }}</td>
               </tr>
               <tr>
                 <th scope="row">Bout Count</th>
-                <td>90 / Generate</td>
+                <td>{{ $bouts->count() }}
+                  <button class="btn btn-icon" onclick="loadDetails(this)" 
+                  data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout_details"}}" 
+                  data-details_key="bout_details"
+                  type="button">
+                  <i class="material-icons">edit</i>
+                </button>
+              </td>
+              </tr>
+              <tr>
+                <th scope="row">View Bout Board</th>
+                <td>{{ $bouts->count() }}</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="modal fade" id="bout_detailsModal" tabindex="-1"></div>
+        <div class="modal fade" id="clear_dataModal" tabindex="-1"></div>
         <div class="card-actions justify-content-end">
           <button class="btn btn-icon" onclick="loadDetails(this)" 
-            data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout_details"}}" 
-            data-details_key="bout_details"
+            data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/clear_data"}}" 
+            data-details_key="clear_data"
             type="button">
-            <i class="material-icons">edit</i>
+            <i class="material-icons">delete</i>
           </button>
         </div>
       </div>

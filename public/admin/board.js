@@ -2,14 +2,11 @@ function loadReport() {
   $("#div_report").html(
       '<div class="progress"><div class="progress-bar progress-bar-indeterminate" role="progressbar"></div></div>'
   );
-  // var data = $("#form_filter").serialize();
-  // $.post($("#btn_filter_data").data("href"), data, function (data, status) {
-  //     $("#div_report").html(data);
-  // });
     $.get($("#btn_filter_data").data("href"), function (data, status) {
       $("#div_report").html(data);
-      // $("#divOnChangeLevel").html(data).trigger("create");
-      // $("#district").select2({ width: "resolve" });
+      if(document.getElementById('resizeMe')) {
+        createResizableTable(document.getElementById('resizeMe'));
+      }
     });
 }
 

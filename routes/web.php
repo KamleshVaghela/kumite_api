@@ -19,7 +19,7 @@ Route::get('/', function () {
 // Route::get('/login', [App\Http\Controllers\UserController::class, "web_login"]);
 Route::group(['middleware' => 'web'], function () {
     Route::controller(App\Http\Controllers\UserController::class)->group(function () {
-        Route::get('/login', 'web_login');
+        Route::get('/login', 'web_login')->name('login');;
         Route::post('/user/login', 'web_user_login')->name('user.web.login');
     });
     Route::group(['prefix'=>'admin',  'middleware' => 'auth:sanctum'], function() {
@@ -51,6 +51,9 @@ Route::group(['middleware' => 'web'], function () {
 
             Route::get('/competition/board/{encrypted_comp_id}/bout_details', 'boutDetails')->name('admin.board.bout_details');
             Route::post('/competition/board/{encrypted_comp_id}/bout_details', 'saveBoutDetails')->name('admin.board.save_bout_details');
+
+            Route::get('/competition/board/{encrypted_comp_id}/clear_data', 'clearData')->name('admin.board.clear_data');
+            Route::post('/competition/board/{encrypted_comp_id}/clear_data', 'saveClearData')->name('admin.board.save_clear_data');
 
             Route::post('/competition/report', 'report')->name('admin.competition.report');
             Route::post('/competition/store', 'store')->name('admin.competition.store');

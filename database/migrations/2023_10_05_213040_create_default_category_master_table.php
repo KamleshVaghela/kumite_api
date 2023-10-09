@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('default_category_master', function (Blueprint $table) {
+        Schema::create('default_category_masters', function (Blueprint $table) {
             $table->id();
             $table->string('category_group')->nullable(false);
             $table->string('gender')->nullable(false);

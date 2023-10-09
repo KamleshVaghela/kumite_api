@@ -20,9 +20,12 @@ return new class extends Migration
             $table->string('external_unique_id');
             $table->string('external_coach_code');
             $table->string('full_name')->nullable(false);
+            $table->string('gender')->nullable(false);
 
             $table->integer('age')->nullable(false);
             $table->integer('weight')->nullable(false);
+
+            $table->integer('rank_id')->nullable(false);
 
             $table->integer('user_id')->nullable(false);
             $table->timestamp('last_modified');

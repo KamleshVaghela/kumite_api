@@ -2,7 +2,7 @@
   <div class="modal-content">
       <div class="modal-header">
           <h5 class="modal-title" id="{{$details_key}}ModalScrollableTitle">
-              Bout Details
+              Level Details
           </h5>
   </div>
 
@@ -24,7 +24,7 @@
   </div>
   <div class="modal-footer">
       <button type="button" class="btn btn-primary" data-dismiss="modal">Decline</button>
-      <button type="button" class="btn btn-primary" data-href="{{URL::to('/admin/competition/board/'.$decrypted_comp_id.'/'.$details_key)}}" id="{{$details_key}}Accept">Generate Bouts</button>
+      <button type="button" class="btn btn-primary" data-href="{{URL::to('/admin/competition/board/'.$decrypted_comp_id.'/'.$details_key)}}" id="{{$details_key}}Accept">Submit</button>
     </div>
 </div>
 </div>
