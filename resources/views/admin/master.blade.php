@@ -27,6 +27,14 @@
     {{-- <link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" /> --}}
     <link href="{{ asset('static/bootstrap4-toggle/dist/css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
     {{-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet"> --}}
+    @php
+        $route =  Route::current()->getName();
+    @endphp
+    @if($route == 'admin.board.bout.data_table')
+        {{-- <link href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/r-2.2.6/rr-1.2.7/sl-1.3.1/datatables.css" rel="stylesheet" crossorigin>
+        <link href="https://cdn.jsdelivr.net/gh/djibe/material@4.6.2-1.0/css/material-plugins.min.css" rel="stylesheet" crossorigin> --}}
+        <link href="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.css" rel="stylesheet">
+    @endif
     <style>
         #content {
           height: 90vh;
@@ -78,9 +86,7 @@
     <script src="{{ asset('ajaxsetup.js') }}"></script>
     <script src="{{ asset('common.js?d='.time()) }}"></script>
 
-    @php
-        $route =  Route::current()->getName();
-    @endphp
+    
     @if($route == 'admin.competition')
         <script src="{{ asset('admin/competition.js?d='.time()) }}"></script>
     @endif
@@ -91,6 +97,14 @@
         <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board.bout')
+        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    @endif
+
+    @if($route == 'admin.board.bout.data_table')
+        {{-- <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.1.68/build/pdfmake.min.js" integrity="sha256-Xf58sgO5ClVXPyDzPH+NtjN52HMC0YXBJ3rp8sWnyUk=" crossorigin></script>
+        <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.1.68/build/vfs_fonts.js" integrity="sha256-vEmrkqA2KrdjNo0/IWMNelI6jHuWAOkIJxGf88r4iic=" crossorigin></script>
+        <script src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/r-2.2.6/rr-1.2.7/sl-1.3.1/datatables.min.js" crossorigin></script> --}}
+        <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
         <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
 </body>

@@ -36,53 +36,6 @@
         position: relative;
     }
 
-
-    /* .table-fixed {
-        background-color: #fbfbfb;
-        width: 100%;
-    }
-    .table-fixed tbody {
-        height: 900px;
-        overflow-y: auto;
-        width: 100%;
-    }
-    .table-fixed thead, .table-fixed tbody, .table-fixed tr, .table-fixed td, .table-fixed th {
-        display: block;
-    }
-    .table-fixed tbody td {
-        float: left;
-    }
-    .table-fixed thead tr th {
-        background-color:#159bd0;
-        border-color:#0881b1;
-        float: left;
-        color:#fff;
-    }
-    .read_article{
-        text-align:center;
-    } */
-
-    /* .tableFixHead {
-        overflow-y: auto;
-        height: 200px;
-    }
-
-    .tableFixHead table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    .tableFixHead th,
-    .tableFixHead td {
-        padding: 8px 16px;
-    }
-
-    .tableFixHead th {
-        position: sticky;
-        top: 0;
-        background: #eee;
-    } */
-
     .tbodyDiv{
         /* max-height: clamp(5em,10vh,250px); */
         max-height: clamp(70em,10vh,250px);
@@ -121,55 +74,4 @@
         </div>
     </div>
 </div>
-<script>
-    // document.addEventListener('DOMContentLoaded', function () {
-    const createResizableTable = function (table) {
-        const cols = table.querySelectorAll('th');
-        [].forEach.call(cols, function (col) {
-            // Add a resizer element to the column
-            const resizer = document.createElement('div');
-            resizer.classList.add('resizer');
-
-            // Set the height
-            resizer.style.height = table.offsetHeight + 'px';
-
-            col.appendChild(resizer);
-
-            createResizableColumn(col, resizer);
-        });
-    };
-
-    const createResizableColumn = function (col, resizer) {
-        let x = 0;
-        let w = 0;
-
-        const mouseDownHandler = function (e) {
-            x = e.clientX;
-
-            const styles = window.getComputedStyle(col);
-            w = parseInt(styles.width, 10);
-
-            document.addEventListener('mousemove', mouseMoveHandler);
-            document.addEventListener('mouseup', mouseUpHandler);
-
-            resizer.classList.add('resizing');
-        };
-
-        const mouseMoveHandler = function (e) {
-            const dx = e.clientX - x;
-            col.style.width = (w + dx) + 'px';
-        };
-
-        const mouseUpHandler = function () {
-            resizer.classList.remove('resizing');
-            document.removeEventListener('mousemove', mouseMoveHandler);
-            document.removeEventListener('mouseup', mouseUpHandler);
-        };
-
-        resizer.addEventListener('mousedown', mouseDownHandler);
-    };
-
-    // createResizableTable(document.getElementById('resizeMe'));
-// });
-</script>
 @endsection

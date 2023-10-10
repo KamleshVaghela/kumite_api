@@ -193,6 +193,12 @@
               </tr>
             </tbody>
           </table>
+          <nav class="navdrawer-nav">
+            <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/data_table"}}">Data Table</a>
+          </nav>
+          <nav class="navdrawer-nav">
+            <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/index"}}">Board</a>
+          </nav>
         </div>
         <div class="modal fade" id="bout_detailsModal" tabindex="-1"></div>
         <div class="modal fade" id="clear_dataModal" tabindex="-1"></div>

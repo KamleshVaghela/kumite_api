@@ -174,7 +174,26 @@ class CompetitionController extends Controller
         ->first();
 
         if(is_null($compParticipant)) {
-            $karateKa = KarateKaModel::where('KARATE_KA_ID', $competition_part->KARATE_KA_ID)->first();
+            // $karateKa = KarateKaModel::where('KARATE_KA_ID', $competition_part->KARATE_KA_ID)->first();
+            // $competition = DB::connection('rksys_app')->select($sql);
+            $karateKa = DB::connection('rksys_app')->table("KARATE_KA")
+            ->leftJoin("RANK_MST", function($join) {
+                $join->on("KARATE_KA.RANK_ID", "=", "RANK_MST.RANK_ID");
+            })
+            ->leftJoin("DOJO_MST", function($join) {
+                $join->on("KARATE_KA.DOJO_ID", "=", "DOJO_MST.DOJO_ID");
+            })
+            ->leftJoin("SCHOOL_MASTER", function($join) {
+                $join->on("KARATE_KA.SM_ID", "=", "SCHOOL_MASTER.SM_ID");
+            })
+            ->leftJoin("COACH", function($join) {
+                $join->on("KARATE_KA.COACH_ID", "=", "COACH.COACH_ID");
+            })
+            ->where('KARATE_KA_ID', $competition_part->KARATE_KA_ID)
+            ->select("KARATE_KA.*", "RANK_MST.RANK" ,"DOJO_MST.DOJO_NAME", "SCHOOL_MASTER.SCHOOL_NAME",
+            "COACH.COACH_NAME", "COACH.COACH_CODE")
+            ->first();    
+
             if($karateKa) {
                 $compParticipant = new Participant();
 
@@ -183,13 +202,13 @@ class CompetitionController extends Controller
                 
                 if ($competition->TYPE == "ISC") {
                     //Inter School
-                    $compParticipant->team = "School-$competition->TYPE-$karateKa->SM_ID";
+                    $compParticipant->team = "$competition->TYPE-$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
                 } else if ($competition->TYPE == "IDJ") {
                     //Inter Dojo
-                    $compParticipant->team = "Dojo-$competition->TYPE-$karateKa->DOJO_ID";
+                    $compParticipant->team = "Dojo-$competition->TYPE-$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
                 } else if ($competition->TYPE == "D") {
                     //District
-                    $compParticipant->team = "Coach-$competition->TYPE-$karateKa->COACH_ID";
+                    $compParticipant->team = "Coach-$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
                 } else if ($competition->TYPE == "S") {
                     //State
                     $compParticipant->team = "District-$competition->TYPE-$karateKa->DIS_ID";
@@ -205,6 +224,7 @@ class CompetitionController extends Controller
                 } else {
                     $compParticipant->gender = "Female";
                 }
+                $compParticipant->rank = $karateKa->RANK;
                 $compParticipant->rank_id = $karateKa->RANK_ID;
                 $compParticipant->external_coach_code = $karateKa->COACH_ID;
                     
@@ -251,8 +271,12 @@ class CompetitionController extends Controller
             }
             $compParticipants = Participant::where('competition_id',$compModel->id)->get();
         }
-        $bouts = Bout::where('competition_id',$compModel->id)->get();
+        // $bouts = Bout::where('competition_id',$compModel->id)->get();
         $bout_participant_details = BoutParticipantDetail::where('competition_id',$compModel->id)->get();
+        $bouts = BoutParticipantDetail::where('competition_id',$compModel->id)
+        ->select("bout_id", DB::raw('count(*) as participant_count'))
+        ->groupBy('bout_id')
+        ->get();
 
         return View('admin.competition.board.report')
         ->with('decrypted_comp_id',$decrypted_comp_id)
@@ -507,7 +531,7 @@ class CompetitionController extends Controller
                 where('weight','<=', $compCategory->to_weight)->
                 when($compCategory->group_rank, function ($query, $group_rank) {
                     if($group_rank == "WYO") {
-                        $query->whereIn('rank_id',array(1, 2, 3));
+                        $query->whereIn('rank_id',array(0, 1, 2, 3));
                     } else if($group_rank == "GBP") {
                         $query->whereIn('rank_id',array(4, 5, 6));
                     } else {

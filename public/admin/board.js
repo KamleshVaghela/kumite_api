@@ -4,8 +4,16 @@ function loadReport() {
   );
     $.get($("#btn_filter_data").data("href"), function (data, status) {
       $("#div_report").html(data);
-      if(document.getElementById('resizeMe')) {
-        createResizableTable(document.getElementById('resizeMe'));
+      // if(document.getElementById('resizeMe')) {
+        // createResizableTable(document.getElementById('resizeMe'));
+      // }
+      if(document.getElementById('datatables-example')) {
+        $('#datatables-example').DataTable({
+          fixedHeader: {
+            header: true,
+            footer: true
+          }
+        });
       }
     });
 }

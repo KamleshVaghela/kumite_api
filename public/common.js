@@ -140,4 +140,17 @@ function loadDetails(that) {
     });
   }
 
-  
+  function loadContentDetails(that, details_key, clear_me) {
+    const href = $(that).data("href");
+    $('li[name="li_'+details_key+'"]').removeClass("active");
+    $(that).addClass("active");
+    
+    $("#div_" + details_key).html(
+        '<div class="progress"><div class="progress-bar progress-bar-indeterminate" role="progressbar"></div></div>'
+    );
+
+    $.get(href, function (data, status) {
+        $('#div_'+details_key).html(data).trigger("create");
+        $('#div_'+clear_me).html("").trigger("create");
+    });
+  };
