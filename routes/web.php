@@ -76,5 +76,21 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/update', 'update')->name('admin.board.bout.update');
             Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/destroy', 'destroy')->name('admin.board.bout.destroy');
         });
+
+        Route::controller(App\Http\Controllers\Admin\DefaultCategoryController::class)->group(function () {
+            Route::get('/default_category/index', 'index')->name('admin.default_category');
+            Route::get('/default_category/report', 'report')->name('admin.default_category.report');
+
+            Route::get('/default_category/{category}/categories', 'categories')->name('admin.default_category.categories');
+            Route::get('/default_category/{category_id}/category', 'category')->name('admin.default_category.category');
+
+            // Route::get('/competition/default_category/create', 'create')->name('admin.board.bout.create');
+            // Route::post('/competition/default_category/store', 'store')->name('admin.board.bout.save');
+
+            // Route::post('/competition/default_category/{encrypted_bout_id}/show', 'show')->name('admin.board.bout.show');
+            // Route::post('/competition/default_category/{encrypted_bout_id}/edit', 'edit')->name('admin.board.bout.edit');
+            // Route::post('/competition/default_category/{encrypted_bout_id}/update', 'update')->name('admin.board.bout.update');
+            // Route::post('/competition/default_category/{encrypted_bout_id}/destroy', 'destroy')->name('admin.board.bout.destroy');
+        });
     });
 });

@@ -15,6 +15,9 @@ $route =  Route::current()->getName();
       <nav class="navdrawer-nav">
         <a class="nav-item nav-link {{ $route == 'admin.competition' ? 'active' : '' }}" href="{{ route('admin.competition') }}">Competition</a>
       </nav>
+      <nav class="navdrawer-nav">
+        <a class="nav-item nav-link {{ $route == 'admin.default_category' ? 'active' : '' }}" href="{{ route('admin.default_category') }}">Category</a>
+      </nav>
       {{-- <nav class="navdrawer-nav">
         <a class="nav-item nav-link {{ $route == 'admin.staff' ? 'active' : '' }}" href="{{ route('admin.staff') }}">Staff Master</a>
       </nav>

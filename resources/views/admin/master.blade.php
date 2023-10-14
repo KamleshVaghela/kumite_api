@@ -99,6 +99,9 @@
     @if($route == 'admin.board.bout')
         <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
+    @if($route == 'admin.default_category')
+        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    @endif
 
     @if($route == 'admin.board.bout.data_table')
         {{-- <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.1.68/build/pdfmake.min.js" integrity="sha256-Xf58sgO5ClVXPyDzPH+NtjN52HMC0YXBJ3rp8sWnyUk=" crossorigin></script>
