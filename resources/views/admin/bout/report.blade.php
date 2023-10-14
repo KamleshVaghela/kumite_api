@@ -2,7 +2,7 @@
     <table id="resizeMe" class="table table-bordered table-striped text-center">
         <thead class="sticky-top bg-white">
             <tr>
-                <th style="width: 400px;">Bouts</th>
+                <th style="width: 450px;">Bouts</th>
                 <th style="width: 450px;">Karate-Ka</th>
                 <th>Details</th>
             </tr>
@@ -21,7 +21,7 @@
                                         data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$rec->bouts_id.'/participants')}}"
                                         name="li_participants"
                                     >
-                                        {{$rec->bouts_id}}->{{$rec->bouts_category}}
+                                        [{{$rec->bouts_id}}] -> {{$rec->bouts_category}}
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>
                                     
                                     </li>
@@ -35,7 +35,7 @@
                                         data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/0/participants')}}"
                                         name="li_participants"
                                     >
-                                        0->Bout not Assigned
+                                        [0] -> Bout not Assigned
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>
                                     </li>
                                 </div>
