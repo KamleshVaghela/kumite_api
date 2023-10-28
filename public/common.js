@@ -115,29 +115,77 @@ function loadDetails(that) {
   function submitData(details_key) {
     showProgress(details_key);
     clearMessages("form_"+details_key);
-    var data = $("#form_"+details_key).serialize();
-    $.post($(getAcceptModelId(details_key)).data("href"), data, function (data, status) {
-        $(getMyModelId(details_key)).modal("hide");
-        
-        $("#form_submit_message_span").html(data.message);
-        $("#form_submit_message").modal("show");
-        clearProgress(details_key);
-        loadReport();
-    }).fail(function (response) {
-        $("#form_"+details_key+" .post_error").each(function () {
-            this.innerHTML = "";
+    if (details_key =="importExcel")
+    {
+        // var data = new FormData();
+        // var data = $("#form_"+details_key)[0]; 
+        // console.log(data);
+        // data.append('file', files); 
+        var data = new FormData(); 
+        var files = $('#file')[0].files[0]; 
+        data.append('file', files);
+
+        $.ajax({ 
+            url: $(getAcceptModelId(details_key)).data("href"), 
+            type: 'post', 
+            data: data, 
+            contentType: false, 
+            processData: false, 
+            success: function(response){ 
+                if(response != 0){ 
+                    // alert('file uploaded'); 
+                    $(getMyModelId(details_key)).modal("hide");
+            
+                    $("#form_submit_message_span").html(response.message);
+                    $("#form_submit_message").modal("show");
+                    clearProgress(details_key);
+                    // location.reload(true)
+                    loadReport();
+                } 
+                else{ 
+                    alert('file not uploaded'); 
+                    $("#form_"+details_key+" .post_error").each(function () {
+                        this.innerHTML = "";
+                    });
+                    console.log(response.responseJSON.errors);
+                    if (response.responseJSON.errors) {
+                        $.each(response.responseJSON.errors, function (key, value) {
+                            console.log(key + ": " + value, $("#" + key + "_error"));
+                            $("#" + key + "_error")
+                                .html(value)
+                                .css("color", "red");
+                        });
+                    }
+                    $(getAcceptModelId(details_key)).prop('disabled', false);
+                } 
+            }, 
         });
-        console.log(response.responseJSON.errors);
-        if (response.responseJSON.errors) {
-            $.each(response.responseJSON.errors, function (key, value) {
-                console.log(key + ": " + value, $("#" + key + "_error"));
-                $("#" + key + "_error")
-                    .html(value)
-                    .css("color", "red");
+    }
+    else {
+        var data = $("#form_"+details_key).serialize();
+        $.post($(getAcceptModelId(details_key)).data("href"), data, function (data, status) {
+            $(getMyModelId(details_key)).modal("hide");
+            
+            $("#form_submit_message_span").html(data.message);
+            $("#form_submit_message").modal("show");
+            clearProgress(details_key);
+            loadReport();
+        }).fail(function (response) {
+            $("#form_"+details_key+" .post_error").each(function () {
+                this.innerHTML = "";
             });
-        }
-        $(getAcceptModelId(details_key)).prop('disabled', false);
-    });
+            console.log(response.responseJSON.errors);
+            if (response.responseJSON.errors) {
+                $.each(response.responseJSON.errors, function (key, value) {
+                    console.log(key + ": " + value, $("#" + key + "_error"));
+                    $("#" + key + "_error")
+                        .html(value)
+                        .css("color", "red");
+                });
+            }
+            $(getAcceptModelId(details_key)).prop('disabled', false);
+        });
+    }
   }
 
   function loadContentDetails(that, details_key, clear_me) {

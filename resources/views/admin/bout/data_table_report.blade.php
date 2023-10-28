@@ -14,6 +14,8 @@
           <th>Age</th>
           <th>Weight</th>
           <th>Rank</th>
+          <th># of Competition</th>
+          <th># of Membership</th>
           <th>Bout Id</th>
         </tr>
     </thead>
@@ -31,6 +33,8 @@
           <td>{{ $rec->age }}</td>
           <td>{{ $rec->weight }}</td>
           <td>{{ $rec->rank }}</td>
+          <td>{{ $rec->no_of_part }}</td>
+          <td>{{ $rec->no_of_year }}</td>
           <td>{{ $rec->bouts_id }}</td>
         </tr>
       @empty

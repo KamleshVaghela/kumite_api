@@ -16,6 +16,10 @@
                 <th scope="row">Remarks</th>
                 <td>{{ $competition->REMARKS}}</td>
               </tr>
+              <tr>
+                <th scope="row">ID</th>
+                <td>{{ $competition->COMP_ID}} {{ $competition_id}} </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -199,7 +203,27 @@
           <nav class="navdrawer-nav">
             <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/index"}}">Board</a>
           </nav>
+          <nav class="navdrawer-nav">
+            <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/export_excel"}}">Export Excel</a>
+          </nav>
+          <nav class="navdrawer-nav">
+            <a class="nav-item nav-link active" href="#"
+                onclick="loadDetails(this)" 
+                data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/import_excel"}}" 
+                data-details_key="importExcel"
+            >
+              Import Excel
+            </a>
+          </nav>
+          {{-- <button class="btn btn-icon" 
+            onclick="loadDetails(this)" 
+                  data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout_details"}}" 
+                  data-details_key="bout_details"
+                  type="button">
+                  <i class="material-icons">edit</i>
+                </button> --}}
         </div>
+        <div class="modal fade" id="importExcelModal" tabindex="-1"></div>
         <div class="modal fade" id="bout_detailsModal" tabindex="-1"></div>
         <div class="modal fade" id="clear_dataModal" tabindex="-1"></div>
         <div class="card-actions justify-content-end">

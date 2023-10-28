@@ -6,7 +6,7 @@
                 <div class="row">
                     <figure data-toggle="collapse" data-target="#collapse{{$rec->COMP_ID}}" aria-expanded="false" aria-controls="collapse{{$rec->COMP_ID}}">
                         <blockquote class="blockquote">
-                          <p>{{$rec->COMP_NAME}}</p>
+                          <p>{{$rec->COMP_NAME}} {{$rec->COMP_ID}}</p>
                         </blockquote>
                         <figcaption class="blockquote-footer">{{$rec->TOTAL}}</figcaption>
                     </figure>

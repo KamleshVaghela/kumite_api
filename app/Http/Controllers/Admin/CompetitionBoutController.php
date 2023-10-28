@@ -28,21 +28,51 @@ class CompetitionBoutController extends Controller
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
 
-        $bout_records = DB::table("participants")    
-        ->where('participants.competition_id',$compModel->id)
-        ->leftJoin("bout_participant_details", function($join) {
-            $join->on("bout_participant_details.participant_id", "=", "participants.id");
-        })
-        ->leftJoin("bouts", function($join) {
-            $join->on("bouts.id", "=", "bout_participant_details.bout_id");
-        })
-        ->select("bouts.id as bouts_id", "bouts.category as bouts_category",
-            DB::raw('count(*) as participant_count')
+        $bout_type = DB::table("bout_participant_details")    
+        ->where('bout_participant_details.competition_id',$compModel->id)
+        ->select(
+            DB::raw('count(bout_id) as bout_id_count'),
+            DB::raw('count(custom_bouts_id) as custom_bouts_id_count')
         )
-        ->groupBy('bouts.id')
-        ->groupBy('bouts.id')
-        ->orderBy('bouts.id')
-        ->get();
+        ->first();
+
+        if($bout_type) {
+            if($bout_type->bout_id_count != "0") {
+                $bout_records = DB::table("participants")    
+                ->where('participants.competition_id',$compModel->id)
+                ->leftJoin("bout_participant_details", function($join) {
+                    $join->on("bout_participant_details.participant_id", "=", "participants.id");
+                })
+                ->leftJoin("bouts", function($join) {
+                    $join->on("bouts.id", "=", "bout_participant_details.bout_id");
+                })
+                ->select("bouts.id as bouts_id", "bouts.category as bouts_category",
+                    DB::raw('count(*) as participant_count'), DB::raw("0 as custom_bout_id"), "bouts.gender", DB::raw("'' as bout_number")
+                )
+                ->groupBy('bouts.id')
+                ->orderBy('bouts.id')
+                ->get();
+            } else if($bout_type->custom_bouts_id_count != "0") {
+                $bout_records = DB::table("participants")    
+                ->where('participants.competition_id',$compModel->id)
+                ->leftJoin("bout_participant_details", function($join) {
+                    $join->on("bout_participant_details.participant_id", "=", "participants.id");
+                })
+                ->leftJoin("custom_bouts", function($join) {
+                    $join->on("custom_bouts.id", "=", "bout_participant_details.custom_bouts_id");
+                })
+                ->select("custom_bouts.id as custom_bout_id", "custom_bouts.category as bouts_category",
+                    DB::raw('count(*) as participant_count'), DB::raw("0 as bouts_id"), "custom_bouts.gender", "custom_bouts.bout_number" 
+                )
+                ->groupBy('custom_bouts.id')
+                ->orderBy('custom_bouts.id')
+                ->get();
+            } else {
+                $bout_records = [];
+            }
+        } else {
+            $bout_records = [];
+        }
         return View('admin.bout.report',compact('decrypted_comp_id'))
         ->with('bout_records',$bout_records)
         ;
@@ -60,28 +90,68 @@ class CompetitionBoutController extends Controller
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
 
-        $participants_records = DB::table("participants")    
-        ->where('participants.competition_id',$compModel->id)
-        ->leftJoin("bout_participant_details", function($join) {
-            $join->on("bout_participant_details.participant_id", "=", "participants.id");
-        })
-        ->leftJoin("bouts", function($join) {
-            $join->on("bouts.id", "=", "bout_participant_details.bout_id");
-        })
-        ->select("bouts.id as bouts_id", "bouts.category as bouts_category",
-            "participants.*"
+        $bout_type = DB::table("bout_participant_details")    
+        ->where('bout_participant_details.competition_id',$compModel->id)
+        ->select(
+            DB::raw('count(bout_id) as bout_id_count'),
+            DB::raw('count(custom_bouts_id) as custom_bouts_id_count')
         )
-        ->orderBy('bouts.id')
-        ->get();
+        ->first();
+
+        if($bout_type) {
+            if($bout_type->bout_id_count != "0") {
+                $participants_records = DB::table("participants")    
+                ->where('participants.competition_id',$compModel->id)
+                ->leftJoin("bout_participant_details", function($join) {
+                    $join->on("bout_participant_details.participant_id", "=", "participants.id");
+                })
+                ->leftJoin("bouts", function($join) {
+                    $join->on("bouts.id", "=", "bout_participant_details.bout_id");
+                })
+                ->select("bouts.id as bouts_id", "bouts.category as bouts_category",
+                    "participants.*", DB::raw("0 as custom_bout_id")
+                )
+                ->orderBy('bouts.id')
+                ->get();
+            } else if($bout_type->custom_bouts_id_count != "0") {
+                $participants_records = DB::table("participants")    
+                ->where('participants.competition_id',$compModel->id)
+                ->leftJoin("bout_participant_details", function($join) {
+                    $join->on("bout_participant_details.participant_id", "=", "participants.id");
+                })
+                ->leftJoin("custom_bouts", function($join) {
+                    $join->on("custom_bouts.id", "=", "bout_participant_details.custom_bouts_id");
+                })
+                ->select("custom_bouts.id as custom_bout_id", "custom_bouts.category as bouts_category",
+                    "participants.*", DB::raw("0 as bouts_id")
+                )
+                ->orderBy('custom_bouts.id')
+                ->get();
+            } else {
+                $participants_records = [];
+            }
+        } else {
+            $participants_records = [];
+        }
         return View('admin.bout.data_table_report',compact('decrypted_comp_id'))
         ->with('participants_records',$participants_records);
     }
 
-    public function participants($decrypted_comp_id, $bout_id)
+    public function participants($decrypted_comp_id, $bout_id, $custom_bout_id)
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
 
-        if($bout_id == "0") {
+        if($custom_bout_id != 0) {
+            $participants_records = DB::table("bout_participant_details")
+            ->where('bout_participant_details.custom_bouts_id',$custom_bout_id)
+            ->where('participants.competition_id',$compModel->id)
+            ->join("participants", function($join) {
+                $join->on("bout_participant_details.participant_id", "=", "participants.id");
+            })
+            ->select("participants.*")
+            ->get();
+        }
+        else if($bout_id == "0") {
             $participants_records = DB::table("participants")    
             ->where('participants.competition_id',$compModel->id)
             ->leftJoin("bout_participant_details", function($join) {

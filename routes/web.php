@@ -55,6 +55,10 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/clear_data', 'clearData')->name('admin.board.clear_data');
             Route::post('/competition/board/{encrypted_comp_id}/clear_data', 'saveClearData')->name('admin.board.save_clear_data');
 
+            Route::get('/competition/board/{encrypted_comp_id}/export_excel', 'exportExcel')->name('admin.board.export_excel');
+            Route::get('/competition/board/{encrypted_comp_id}/import_excel', 'importExcel')->name('admin.board.import_excel');
+            Route::post('/competition/board/{encrypted_comp_id}/post_import_excel', 'postImportExcel')->name('admin.board.post_import_excel');
+
             Route::post('/competition/report', 'report')->name('admin.competition.report');
             Route::post('/competition/store', 'store')->name('admin.competition.store');
             Route::get('/competition/edit/{id}', 'edit')->name('admin.competition.edit');
@@ -66,7 +70,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table', 'data_table')->name('admin.board.bout.data_table');
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table/report', 'data_table_report')->name('admin.board.bout.data_table.report');
 
-            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/participants', 'participants')->name('admin.board.bout.participants');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.participants');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.karate_ka');
 
             Route::get('/competition/board/{encrypted_comp_id}/bout/create', 'create')->name('admin.board.bout.create');
@@ -93,4 +97,11 @@ Route::group(['middleware' => 'web'], function () {
             // Route::post('/competition/default_category/{encrypted_bout_id}/destroy', 'destroy')->name('admin.board.bout.destroy');
         });
     });
+});
+
+/*Excel import export*/
+Route::controller(App\Http\Controllers\ImportExportController::class)->group(function () {
+    Route::get('export', 'export')->name('export');
+    Route::get('importExportView', 'importExportView');
+    Route::post('import', 'import')->name('import');
 });

@@ -16,6 +16,11 @@ use Auth;
 use Carbon\Carbon; 
 use Illuminate\Support\Facades\DB;
 use Config;
+use App\Exports\CompDataExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\CompDataImport;
+use App\Models\BoutTempExcel;
+use App\Models\customBout;
 
 class CompetitionController extends Controller
 {
@@ -177,8 +182,17 @@ class CompetitionController extends Controller
             // $karateKa = KarateKaModel::where('KARATE_KA_ID', $competition_part->KARATE_KA_ID)->first();
             // $competition = DB::connection('rksys_app')->select($sql);
             $karateKa = DB::connection('rksys_app')->table("KARATE_KA")
-            ->leftJoin("RANK_MST", function($join) {
+            ->join("RANK_MST", function($join) {
                 $join->on("KARATE_KA.RANK_ID", "=", "RANK_MST.RANK_ID");
+            })
+            ->join("COACH", function($join) {
+                $join->on("KARATE_KA.COACH_ID", "=", "COACH.COACH_ID");
+            })
+            ->join("DISTRICT_MST", function($join) {
+                $join->on("KARATE_KA.DIS_ID", "=", "DISTRICT_MST.DIS_ID");
+            })
+            ->join("DISTRICT_GEO", function($join) {
+                $join->on("DISTRICT_MST.GEOID", "=", "DISTRICT_GEO.GEOID");
             })
             ->leftJoin("DOJO_MST", function($join) {
                 $join->on("KARATE_KA.DOJO_ID", "=", "DOJO_MST.DOJO_ID");
@@ -186,12 +200,32 @@ class CompetitionController extends Controller
             ->leftJoin("SCHOOL_MASTER", function($join) {
                 $join->on("KARATE_KA.SM_ID", "=", "SCHOOL_MASTER.SM_ID");
             })
-            ->leftJoin("COACH", function($join) {
-                $join->on("KARATE_KA.COACH_ID", "=", "COACH.COACH_ID");
-            })
-            ->where('KARATE_KA_ID', $competition_part->KARATE_KA_ID)
+            ->leftJoin(DB::raw('(
+                SELECT KARATE_KA_ID, COUNT(PART_COMP_ID) as NoOfPart 
+                FROM PART_COMPETITION
+                WHERE KARATE_KA_ID='.$competition_part->KARATE_KA_ID.' 
+                GROUP BY KARATE_KA_ID
+            ) X '), 
+                function($join)
+                {
+                    $join->on('KARATE_KA.KARATE_KA_ID', '=', 'X.KARATE_KA_ID');
+                }
+            )
+            ->leftJoin(DB::raw('(
+                SELECT KARATE_KA_ID, COUNT(RENEWAL_ID) as NoOfYear 
+                FROM RENEWAL_DTL 
+                WHERE KARATE_KA_ID='.$competition_part->KARATE_KA_ID.' 
+                GROUP BY KARATE_KA_ID
+            ) Y '), 
+                function($join)
+                {
+                    $join->on('KARATE_KA.KARATE_KA_ID', '=', 'Y.KARATE_KA_ID');
+                }
+            )
+            ->where('KARATE_KA.KARATE_KA_ID', $competition_part->KARATE_KA_ID)
             ->select("KARATE_KA.*", "RANK_MST.RANK" ,"DOJO_MST.DOJO_NAME", "SCHOOL_MASTER.SCHOOL_NAME",
-            "COACH.COACH_NAME", "COACH.COACH_CODE")
+            "COACH.COACH_NAME", "COACH.COACH_CODE", "DISTRICT_GEO.DISTRICT",
+            "X.NoOfPart", "Y.NoOfYear")
             ->first();    
 
             if($karateKa) {
@@ -202,19 +236,19 @@ class CompetitionController extends Controller
                 
                 if ($competition->TYPE == "ISC") {
                     //Inter School
-                    $compParticipant->team = "$competition->TYPE-$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
+                    $compParticipant->team = "IS-$competition->TYPE-$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
                 } else if ($competition->TYPE == "IDJ") {
                     //Inter Dojo
-                    $compParticipant->team = "Dojo-$competition->TYPE-$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
+                    $compParticipant->team = "ID-$competition->TYPE-$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
                 } else if ($competition->TYPE == "D") {
                     //District
-                    $compParticipant->team = "Coach-$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
+                    $compParticipant->team = "CH-$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
                 } else if ($competition->TYPE == "S") {
                     //State
-                    $compParticipant->team = "District-$competition->TYPE-$karateKa->DIS_ID";
+                    $compParticipant->team = "D-$competition->TYPE-$karateKa->DISTRICT";
                 } else if ($competition->TYPE == "N") {
                     //National
-                    $compParticipant->team = "District-$competition->TYPE-$karateKa->DIS_ID";
+                    $compParticipant->team = "D-$competition->TYPE-$karateKa->DISTRICT";
                 }            
                 // $compParticipant->team = 
 
@@ -227,8 +261,10 @@ class CompetitionController extends Controller
                 $compParticipant->rank = $karateKa->RANK;
                 $compParticipant->rank_id = $karateKa->RANK_ID;
                 $compParticipant->external_coach_code = $karateKa->COACH_ID;
-                    
-                
+                $compParticipant->external_coach_name = $karateKa->COACH_NAME;
+
+                $compParticipant->no_of_part = $karateKa->NoOfPart;
+                $compParticipant->no_of_year = $karateKa->NoOfYear;
         
                 $compParticipant->age = $competition_part->AGE;
                 $compParticipant->weight = $competition_part->WEIGHT;
@@ -280,6 +316,7 @@ class CompetitionController extends Controller
 
         return View('admin.competition.board.report')
         ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('competition_id',$compModel->id)
         ->with('competition',$competition)
         ->with('competition_parts',$competition_parts)
         ->with('compParticipants',$compParticipants)
@@ -463,6 +500,8 @@ class CompetitionController extends Controller
         $boutParticipantDetails = BoutParticipantDetail::where('competition_id',$compModel->id)->delete();
         $bouts = Bout::where('competition_id',$compModel->id)->delete();
         $participants = Participant::where('competition_id',$compModel->id)->delete();
+        $data = BoutTempExcel::where('competition_id',$compModel->id)->delete();
+        $bouts = customBout::where('competition_id',$compModel->id)->delete();
         
         return response([
             'data' => '',
@@ -556,6 +595,79 @@ class CompetitionController extends Controller
         return response([
             'data' => '',
             'message' => 'Bout Generated successfully',
+            'alert-type' => 'success'
+        ], 200);
+    }
+
+    public function exportExcel($decrypted_comp_id)
+    {
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        return Excel::download(new CompDataExport($compModel->id), 'Competition_'.$compModel->id.'.xlsx');
+    }
+
+    public function importExcel($decrypted_comp_id, Request $request)
+    {
+        $details_key = $request->query('details_key');
+
+        return View('admin.competition.board.import_excel',compact('details_key'))
+        ->with('decrypted_comp_id',$decrypted_comp_id)
+        // ->with('competition',$competition)
+        ;
+    }
+
+    public function postImportExcel($decrypted_comp_id, Request $request) {
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        $data = BoutTempExcel::where('competition_id',$compModel->id)->delete();
+        $bouts = customBout::where('competition_id',$compModel->id)->delete();
+        Excel::import(new CompDataImport($compModel->id), 
+                      $request->file('file')->store('files'));
+
+        $excelRecords = BoutTempExcel::where('competition_id',$compModel->id)
+        ->orderBy('gender')
+        // ->orderBy('bout_number')
+        ->orderBy('category')
+        ->get();
+        $male_cnt = 1;
+        $female_cnt = 1;
+        foreach($excelRecords as $records) {
+            $boutData = customBout::where('competition_id', $records->competition_id)
+                ->where('gender',$records->gender)
+                ->where('category',$records->category)
+                // ->where('bout_number',$male_cnt)
+                ->first();
+            if($boutData) {
+
+            } else {
+                $boutData = new customBout();
+                $boutData->competition_id = $records->competition_id;
+                $boutData->gender = $records->gender;
+                $boutData->category = $records->category;
+                if ($records->gender == "Male") {
+                    $boutData->bout_number = $male_cnt;
+                    $male_cnt = $male_cnt + 1;
+                }
+                else {
+                    $boutData->bout_number = $female_cnt;
+                    $female_cnt = $female_cnt + 1;
+                }
+                $boutData->save();
+            }
+
+            $compBoutParticipantDetail = new BoutParticipantDetail();
+            $compBoutParticipantDetail->competition_id = $records->competition_id;
+            $compBoutParticipantDetail->custom_bouts_id = $boutData->id;
+            $compBoutParticipantDetail->participant_id = $records->unique_id;
+            $compBoutParticipantDetail->participant_sequence = 1;
+            $compBoutParticipantDetail->user_id = Auth::user()->id;
+            $compBoutParticipantDetail->last_modified = \Carbon\Carbon::now();
+            $compBoutParticipantDetail->last_modified_user_id = Auth::user()->id;
+            $compBoutParticipantDetail->save();
+
+        }
+
+        return response([
+            'data' => '',
+            'message' => 'Excel Imported successfully',
             'alert-type' => 'success'
         ], 200);
     }

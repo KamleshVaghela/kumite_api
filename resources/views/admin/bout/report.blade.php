@@ -18,10 +18,10 @@
                                 <div class="card-body">
                                     <li class="list-group-item d-flex list-group-item-action justify-content-between align-items-center" 
                                         onclick="loadContentDetails(this, 'participants', 'karate_ka')"
-                                        data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$rec->bouts_id.'/participants')}}"
+                                        data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$rec->bouts_id.'/'.$rec->custom_bout_id.'/participants')}}"
                                         name="li_participants"
                                     >
-                                        [{{$rec->bouts_id}}] -> {{$rec->bouts_category}}
+                                        {{$rec->gender}}-{{$rec->bout_number}} : {{$rec->bouts_category}}
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>
                                     
                                     </li>
