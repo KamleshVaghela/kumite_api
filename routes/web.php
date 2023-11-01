@@ -26,6 +26,12 @@ Route::group(['middleware' => 'web'], function () {
         Route::controller(App\Http\Controllers\Admin\HomeController::class)->group(function () {
             Route::get('/dashboard', 'index')->name('admin.dashboard');
         });
+        Route::controller(App\Http\Controllers\Admin\SchoolMasterController::class)->group(function () {
+            Route::get('/school_master', 'index')->name('admin.school_master');
+            Route::post('/school_master/report', 'report')->name('admin.school_master.report');
+            Route::get('/school_master/create', 'create')->name('admin.school_master.create');
+            Route::post('/school_master/store', 'store')->name('admin.school_master.store');
+        });
 
         Route::controller(App\Http\Controllers\Admin\CompetitionController::class)->group(function () {
             Route::get('/competition', 'index')->name('admin.competition');

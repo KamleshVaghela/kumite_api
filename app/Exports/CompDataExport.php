@@ -25,12 +25,12 @@ class CompDataExport implements FromCollection, WithHeadings
             'no_of_part',
             'no_of_year', 'team', 
             'age', 'weight', 'rank',
-            DB::raw(' CONCAT(external_coach_name, "( ", external_coach_code, " )") as coach'), 
-            )
+            DB::raw(' CONCAT(external_coach_name, "( ", external_coach_code, " )") as coach') 
+        )
         ->orderBy('gender')
-        ->orderBy('external_coach_name')
-        ->orderBy('full_name')
         ->orderBy('age')
+        ->orderBy('rank_id')
+        ->orderBy('weight')
         ->get();
         return $participants;
     }

@@ -32,7 +32,7 @@
                                 <div class="card-body">
                                     <li class="list-group-item d-flex list-group-item-action justify-content-between align-items-center"
                                         onclick="loadContentDetails(this, 'participants', 'karate_ka')"
-                                        data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/0/participants')}}"
+                                        data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/0/0/participants')}}"
                                         name="li_participants"
                                     >
                                         [0] -> Bout not Assigned

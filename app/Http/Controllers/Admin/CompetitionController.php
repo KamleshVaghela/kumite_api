@@ -21,6 +21,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CompDataImport;
 use App\Models\BoutTempExcel;
 use App\Models\customBout;
+use App\Models\FightDetail;
 
 class CompetitionController extends Controller
 {
@@ -665,10 +666,114 @@ class CompetitionController extends Controller
 
         }
 
+        // $customBoutData = customBout::where('competition_id',$records->competition_id)
+        // ->orderBy('id')
+        // ->get();
+
+        // foreach($customBoutData as $boutData) {
+            
+        //     $participants_records = DB::table("bout_participant_details")
+        //     ->where('bout_participant_details.custom_bouts_id',$boutData->id)
+        //     ->join("participants", function($join) {
+        //         $join->on("bout_participant_details.participant_id", "=", "participants.id");
+        //     })
+        //     ->select("bout_participant_details.id", "participants.external_coach_code")
+        //     ->get();
+
+        //     $this->processFightData($participants_records, $boutData->id);
+        // }
+
         return response([
             'data' => '',
             'message' => 'Excel Imported successfully',
             'alert-type' => 'success'
         ], 200);
+    }
+
+    function processFightData($result, $bouts_id) {
+        // dd($bouts_id);
+
+        $number_of_competitor = count($result);
+
+        $number_of_bout = ceil($number_of_competitor/2);
+    
+        $data = array();
+        if( $number_of_competitor > 0 ) {
+            foreach($result as $row) { 
+                array_push($data, $row);
+            }
+            
+            $my_array = array();
+            $half_of_bout = ceil($number_of_bout/2);
+            $arr = range(0,$number_of_bout-1);
+            
+            foreach($arr as $item) {
+                $AKA = $data[$item];
+                // $AO = !isset($data[$number_of_bout + $item]) ? array("id"=>0, "competitor"=>"Bye", "coach"=>"Bye" ): $data[$number_of_bout + $item];
+                $AO = !isset($data[$number_of_bout + $item]) ?  (object) array('id' => 0) : $data[$number_of_bout + $item];
+                $my_d = array(
+                      "Bout"=>$item + 1,
+                      "AKA"=> $AKA,
+                      "AO"=> $AO
+                );
+                array_push($my_array,$my_d);
+            }
+    
+            $chunk = array_chunk($my_array,$half_of_bout);
+            try {
+                $first_set = $chunk[0]; 
+                if(count($chunk) > 1) {
+                    $second_set = $chunk[1];
+                }
+            } catch (\Exception $e) {
+                dd(count($chunk));
+            }
+            
+    
+            $my_array_new = array();
+            $half_of_half_of_bout = ceil($half_of_bout/2);
+    
+            $arr = range(0,$half_of_bout-1);
+    
+            $cnt=1;
+    
+            foreach($arr as $item) {
+                $first_set[$item]['Bout'] = $cnt;
+                array_push($my_array_new, $first_set[$item]);
+                $cnt = $cnt + 1;
+    
+                if($number_of_bout>=$cnt)
+                {
+                      $second_set[$item]['Bout'] = $cnt;
+                      array_push($my_array_new, $second_set[$item]);
+                      $cnt = $cnt + 1;
+                }
+            }
+    
+            
+            foreach ($my_array_new as $qid) { 
+                try {
+                    $fightDetail = new FightDetail();
+                    $fightDetail->bout_id = $bouts_id;
+                    $fightDetail->fight_number = $qid['Bout'];
+                    $fightDetail->aka = $qid['AKA']->id;
+                    $fightDetail->ao = $qid['AO']->id;
+                    $fightDetail->winner = 0;
+                    if ($qid['AO']->id == 0 ) {
+                        $fightDetail->bye = 1;
+                    } else {
+                        $fightDetail->bye = 0;
+                    }
+                    $fightDetail->user_id = Auth::user()->id;
+                    $fightDetail->last_modified = \Carbon\Carbon::now();
+                    $fightDetail->last_modified_user_id = Auth::user()->id;
+                    $fightDetail->save();
+                  
+                  } catch (\Exception $e) {
+                  
+                    dd( $arr);
+                  }
+            }
+        }
     }
 }
