@@ -13,3 +13,15 @@
       <p class="bg-danger text-white p-1">No Item data found</p>
   @endforelse
 </ul>
+@if(count($participants_records) < 1)
+    <div class="alert alert-warning">
+        <strong>Sorry!</strong> No Product Found.
+    </div>                                      
+@else
+<a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$bout_id.'/'.$custom_bout_id.'/download_bout')}}">
+  <button class="btn btn-icon btn-sm" type="button"><i class="material-icons">file_download</i></button>
+</a>
+<button class="btn btn-icon btn-sm" type="button"><i class="material-icons">output</i></button>
+<button class="btn btn-icon btn-sm" type="button"><i class="material-icons">emoji_events</i></button>  
+@endif
+

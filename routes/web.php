@@ -77,6 +77,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table/report', 'data_table_report')->name('admin.board.bout.data_table.report');
 
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.participants');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/download_bout', 'download_bout')->name('admin.board.bout.download_bout');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.karate_ka');
 
             Route::get('/competition/board/{encrypted_comp_id}/bout/create', 'create')->name('admin.board.bout.create');
