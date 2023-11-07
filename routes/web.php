@@ -53,7 +53,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('/competition/board/{encrypted_comp_id}/level_details', 'saveLevelDetails')->name('admin.board.save_level_details');
 
             Route::get('/competition/board/{encrypted_comp_id}/result_details', 'resultDetails')->name('admin.board.result_details');
-            Route::post('/competition/board/{encrypted_comp_id}/result_details', 'saveResultDetails')->name('admin.board.save_result_details');
+            // Route::post('/competition/board/{encrypted_comp_id}/result_details', 'saveResultDetails')->name('admin.board.save_result_details');
 
             Route::get('/competition/board/{encrypted_comp_id}/bout_details', 'boutDetails')->name('admin.board.bout_details');
             Route::post('/competition/board/{encrypted_comp_id}/bout_details', 'saveBoutDetails')->name('admin.board.save_bout_details');
@@ -78,7 +78,8 @@ Route::group(['middleware' => 'web'], function () {
 
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.participants');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/download_bout', 'download_bout')->name('admin.board.bout.download_bout');
-            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.karate_ka');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.karate_ka');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/save_data', 'save_data')->name('admin.board.bout.save_data');
 
             Route::get('/competition/board/{encrypted_comp_id}/bout/create', 'create')->name('admin.board.bout.create');
             Route::post('/competition/board/{encrypted_comp_id}/bout/store', 'store')->name('admin.board.bout.save');

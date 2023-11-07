@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Config;
 use setasign\Fpdi\Fpdi;
+use App\Models\customBout;
+use App\Models\CompetitionPartModel;
 
 class CompetitionBoutController extends Controller
 {
@@ -82,6 +84,8 @@ class CompetitionBoutController extends Controller
         }
         return View('admin.bout.report',compact('decrypted_comp_id'))
         ->with('bout_records',$bout_records)
+        ->with('bout_id',$bout_type->bout_id_count)
+        ->with('custom_bout_id',$bout_type->custom_bouts_id_count)
         ;
     }
 
@@ -141,7 +145,9 @@ class CompetitionBoutController extends Controller
             $participants_records = [];
         }
         return View('admin.bout.data_table_report',compact('decrypted_comp_id'))
-        ->with('participants_records',$participants_records);
+        ->with('participants_records',$participants_records)
+        ->with('bout_id',$bout_type->bout_id_count)
+        ->with('custom_bout_id',$bout_type->custom_bouts_id_count);
     }
 
     public function participants($decrypted_comp_id, $bout_id, $custom_bout_id)
@@ -155,8 +161,12 @@ class CompetitionBoutController extends Controller
             ->join("participants", function($join) {
                 $join->on("bout_participant_details.participant_id", "=", "participants.id");
             })
-            ->select("participants.*")
+            ->leftJoin("custom_bouts", function($join) {
+                $join->on("custom_bouts.id", "=", "bout_participant_details.custom_bouts_id");
+            })
+            ->select("participants.*", "custom_bouts.first", "custom_bouts.second", "custom_bouts.third_1", "custom_bouts.third_2")
             ->get();
+            $boutObj = customBout::find($custom_bout_id);
         }
         else if($bout_id == "0") {
             $participants_records = DB::table("participants")    
@@ -164,9 +174,13 @@ class CompetitionBoutController extends Controller
             ->leftJoin("bout_participant_details", function($join) {
                 $join->on("bout_participant_details.participant_id", "=", "participants.id");
             })
+            ->leftJoin("bouts", function($join) {
+                $join->on("bouts.id", "=", "bout_participant_details.bout_id");
+            })
             ->whereNull('bout_participant_details.bout_id')
-            ->select("participants.*")
+            ->select("participants.*", "bouts.first", "bouts.second", "bouts.third_1", "bouts.third_2")
             ->get();
+            $boutObj = Bout::find($bout_id);
         } else {
             $participants_records = DB::table("bout_participant_details")    
             ->where('bout_participant_details.bout_id',$bout_id)
@@ -174,31 +188,123 @@ class CompetitionBoutController extends Controller
             ->join("participants", function($join) {
                 $join->on("bout_participant_details.participant_id", "=", "participants.id");
             })
-            ->select("participants.*")
+            ->leftJoin("bouts", function($join) {
+                $join->on("bouts.id", "=", "bout_participant_details.bout_id");
+            })
+            ->select("participants.*",  "bouts.first", "bouts.second", "bouts.third_1", "bouts.third_2")
             ->get();
+            $boutObj = Bout::find($bout_id);
         }
-        
+        // dd($participants_records);
         return View('admin.bout.participants',compact('decrypted_comp_id'))
         ->with('participants_records',$participants_records)
         ->with('bout_id',$bout_id)
-        ->with('custom_bout_id',$custom_bout_id);
+        ->with('custom_bout_id',$custom_bout_id)
+        ->with('boutObj',$boutObj);
     }
 
-    public function karate_ka($decrypted_comp_id, $bout_id, $participant_id)
+    public function karate_ka($decrypted_comp_id, $bout_id, $custom_bout_id, $participant_id)
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+
+        if($bout_id != "0") {
+            $boutObj = Bout::find($bout_id);
+
+        } else if($custom_bout_id != "0") {
+            $boutObj = customBout::find($custom_bout_id);
+        }
+        // dd($dataObj);    
 
         $participants = DB::table("participants")    
         ->where('participants.competition_id',$compModel->id)
         ->where('participants.id',$participant_id)
         ->select("participants.*")
         ->first();
+
+        // dd($participants);
         
         return View('admin.bout.karate_ka',compact('decrypted_comp_id'))
         ->with('participants',$participants)
-        ->with('bout_id',$bout_id);
+        ->with('bout_id',$bout_id) 
+        ->with('custom_bout_id',$custom_bout_id)
+        ->with('details_key','result_details')
+        ->with('boutObj',$boutObj);
     }
 
+    public function save_data(Request $request,$decrypted_comp_id, $bout_id, $custom_bout_id, $participant_id) {
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        $participant = Participant::find($participant_id);
+        $competitionPartModel = CompetitionPartModel::find($participant->external_unique_id);
+
+        if($bout_id != "0") {
+            $dataObj = Bout::find($bout_id);
+
+        } else if($custom_bout_id != "0") {
+            $dataObj = customBout::find($custom_bout_id);
+        }
+        if($request->result == "1") {
+            $dataObj->first = $participant_id;
+            $competitionPartModel->KUMITE_RES = 1;
+
+            if($dataObj->second == $participant_id) {
+                $dataObj->second = 0;
+            }
+            if($dataObj->third_1 == $participant_id) {
+                $dataObj->third_1 = 0;
+            }
+            if($dataObj->third_2 == $participant_id) {
+                $dataObj->third_2 = 0;
+            }
+        } else if($request->result == "2") {
+            $dataObj->second = $participant_id;
+            $competitionPartModel->KUMITE_RES = 2;
+
+            if($dataObj->first == $participant_id) {
+                $dataObj->first = 0;
+            }
+            if($dataObj->third_1 == $participant_id) {
+                $dataObj->third_1 = 0;
+            }
+            if($dataObj->third_2 == $participant_id) {
+                $dataObj->third_2 = 0;
+            }
+
+        } else if($request->result == "3") {
+            $dataObj->third_1 = $participant_id;
+            $competitionPartModel->KUMITE_RES = 3;
+
+            if($dataObj->first == $participant_id) {
+                $dataObj->first = 0;
+            }
+            if($dataObj->second == $participant_id) {
+                $dataObj->second = 0;
+            }
+            if($dataObj->third_2 == $participant_id) {
+                $dataObj->third_2 = 0;
+            }
+        } else if($request->result == "4") {
+            $dataObj->third_2 = $participant_id;
+            $competitionPartModel->KUMITE_RES = 3;
+
+            if($dataObj->first == $participant_id) {
+                $dataObj->first = 0;
+            }
+            if($dataObj->second == $participant_id) {
+                $dataObj->second = 0;
+            }
+            if($dataObj->third_1 == $participant_id) {
+                $dataObj->third_1 = 0;
+            }
+        }
+        $dataObj->save();
+        $competitionPartModel->save();
+
+        return response([
+            'data' => $dataObj,
+            'message' => 'Result updated successfully',
+            'alert-type' => 'success'
+        ], 200);
+    }
     public function download_bout($decrypted_comp_id, $bout_id, $custom_bout_id)
     {
 
@@ -213,6 +319,7 @@ class CompetitionBoutController extends Controller
             })
             ->select("participants.*")
             ->get();
+            $bout_record = customBout::find($custom_bout_id);
         }
         else if($bout_id == "0") {
             $participants_records = DB::table("participants")    
@@ -223,6 +330,7 @@ class CompetitionBoutController extends Controller
             ->whereNull('bout_participant_details.bout_id')
             ->select("participants.*")
             ->get();
+            $bout_record = Bout::find($bout_id);
         } else {
             $participants_records = DB::table("bout_participant_details")    
             ->where('bout_participant_details.bout_id',$bout_id)
@@ -232,7 +340,9 @@ class CompetitionBoutController extends Controller
             })
             ->select("participants.*")
             ->get();
+            $bout_record = Bout::find($bout_id);
         }
+        // dd($bout_record);
 
         $player_count = count($participants_records);
         $player_conf = Config::get('constants.competition.'.$player_count);
@@ -241,8 +351,8 @@ class CompetitionBoutController extends Controller
 
         $fpdi = new FPDI;
         
-        $filePath = $player_count.".pdf";
-        $outputFilePath = $decrypted_comp_id."_".$custom_bout_id."_output.pdf";
+        $filePath = "competition/template/".$player_count.".pdf";
+        $outputFilePath = "competition/tmp/".$decrypted_comp_id."_".$custom_bout_id."_output.pdf";
         
         $count = $fpdi->setSourceFile($filePath);
   
@@ -260,19 +370,22 @@ class CompetitionBoutController extends Controller
   
             $left = 50;
             $top = 15;
-            $text = "19TH International Wadokai Karate Championship-2023";
-            $fpdi->Text($left,$top,$text);
+            // $text = "19TH International Wadokai Karate Championship-2023";
+            $fpdi->Text($left,$top,$compModel->name);
 
             $left = 260;
             $top = 21;
-            $text = "B-1";
+            $text = "B-".$bout_record->bout_number;
+            if($bout_record->gender == "Female") {
+                $text = "G-".$bout_record->bout_number;
+            }
             $fpdi->Text($left,$top,$text);
             
             $left = 50;
             $top = 25;
             $fpdi->SetFont("helvetica", "b", 17);
-            $text = "U7 - Male - WYO - Upto 20 Kg";
-            $fpdi->Text($left,$top,$text);
+            // $text = "U7 - Male - WYO - Upto 20 Kg";
+            $fpdi->Text($left,$top,$bout_record->category);
 
             foreach($participants_records as $key=>$rec) {
                 // dd($rec);
@@ -304,6 +417,11 @@ class CompetitionBoutController extends Controller
          return response()->file($outputFilePath);
     }
 
+
+    public function result_view($decrypted_comp_id, $bout_id, $custom_bout_id) {
+
+    }
+    
     public function print_player_text($fpdi, $competition_conf, $player_data) {
         $left_1 = $competition_conf['left_1'];
         $left_2 = $competition_conf['left_2']; 

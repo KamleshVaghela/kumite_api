@@ -1,4 +1,21 @@
 <div class="container">
+  <nav class="nav nav-pills flex-column flex-sm-row">
+    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/data_table"}}"><button class="btn btn-outline-success" type="button">Data Table</button></a>
+    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/index"}}"><button class="btn btn-outline-primary" type="button">Board</button></a>
+    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/export_excel"}}"><button class="btn btn-outline-secondary" type="button">Export Excel</button></a>
+    <a class="flex-sm-fill text-sm-center nav-link active"  href="#"
+        onclick="loadDetails(this)" 
+        data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/import_excel"}}" 
+        data-details_key="importExcel"
+    >
+    <button class="btn btn-outline-info" type="button">Import Excel</button></a>
+    <a class="flex-sm-fill text-sm-center nav-link active"  href="#"
+        onclick="loadDetails(this)" 
+        data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/result_details"}}" 
+        data-details_key="result_details"
+    >
+    <button class="btn btn-outline-danger" type="button">Results</button></a>
+  </nav>
   <div class="row">
     <div class="col-sm">
       <div class="card" style="max-width: 350px;">
@@ -183,12 +200,12 @@
               <tr>
                 <th scope="row">Bout Count</th>
                 <td>{{ $bouts->count() }}
-                  <button class="btn btn-icon" onclick="loadDetails(this)" 
+                {{-- <button class="btn btn-icon" onclick="loadDetails(this)" 
                   data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout_details"}}" 
                   data-details_key="bout_details"
                   type="button">
                   <i class="material-icons">edit</i>
-                </button>
+                </button> --}}
               </td>
               </tr>
               <tr>
@@ -197,24 +214,6 @@
               </tr>
             </tbody>
           </table>
-          <nav class="navdrawer-nav">
-            <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/data_table"}}">Data Table</a>
-          </nav>
-          <nav class="navdrawer-nav">
-            <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/index"}}">Board</a>
-          </nav>
-          <nav class="navdrawer-nav">
-            <a class="nav-item nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/export_excel"}}">Export Excel</a>
-          </nav>
-          <nav class="navdrawer-nav">
-            <a class="nav-item nav-link active" href="#"
-                onclick="loadDetails(this)" 
-                data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/import_excel"}}" 
-                data-details_key="importExcel"
-            >
-              Import Excel
-            </a>
-          </nav>
           {{-- <button class="btn btn-icon" 
             onclick="loadDetails(this)" 
                   data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout_details"}}" 
@@ -224,6 +223,7 @@
                 </button> --}}
         </div>
         <div class="modal fade" id="importExcelModal" tabindex="-1"></div>
+        <div class="modal fade" id="result_detailsModal" tabindex="-1"></div>
         <div class="modal fade" id="bout_detailsModal" tabindex="-1"></div>
         <div class="modal fade" id="clear_dataModal" tabindex="-1"></div>
         <div class="card-actions justify-content-end">
@@ -233,30 +233,6 @@
             type="button">
             <i class="material-icons">delete</i>
           </button>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm">
-      <div class="card" style="max-width: 350px;">
-        <div class="card-header border-0">
-          <h5 class="card-title">Result</h5>
-        </div>
-        <div class="card-body pt-0">
-          <table class="table table-striped">
-            <tbody>
-              <tr>
-                <th scope="row">Winner</th>
-                <td>{{ $competition->DIS_ID_W}}</td>
-              </tr>
-              <tr>
-                <th scope="row">Runner-Up</th>
-                <td>{{ $competition->DIS_ID_R}}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="card-actions justify-content-end">
-          {{-- <button class="btn btn-icon" onclick="loadLoadDetails(this)" data-href="{{URL::to('admin/competition/board/'.encrypt_val($competition->COMP_ID))."/resultDetails"}}" type="button"><i class="material-icons">edit</i></button> --}}
         </div>
       </div>
     </div>

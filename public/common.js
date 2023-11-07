@@ -200,5 +200,11 @@ function loadDetails(that) {
     $.get(href, function (data, status) {
         $('#div_'+details_key).html(data).trigger("create");
         $('#div_'+clear_me).html("").trigger("create");
+        if($("#form_result_details")) {
+            $(getAcceptModelId("result_details")).click(function () {
+                $(getAcceptModelId("result_details")).prop('disabled', true);
+                submitData("result_details");
+            });
+        }
     });
   };

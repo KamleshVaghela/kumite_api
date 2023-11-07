@@ -100,7 +100,8 @@ return [
         6 => ['1', '2', '3', '5', '6', '7'],
         7 => ['1', '2', '3', '4', '5', '6', '7'],
         8 => ['1', '2', '3', '4', '5', '6', '7', '8'],
-    ]
+    ],
+    "start_date" => "2023/09/01"
 ];
 // $dayOfTheWeek = Carbon::now()->dayOfWeek;
 // $weekday = $weekMap[$dayOfTheWeek];
