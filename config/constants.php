@@ -29,7 +29,7 @@ return [
         'player_location' => [
             '1' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 45,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -37,7 +37,7 @@ return [
             ],
             '2' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 60,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -45,7 +45,7 @@ return [
             ],
             '3' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 75,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -53,7 +53,7 @@ return [
             ],
             '4' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 90,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -61,7 +61,7 @@ return [
             ],
             '5' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 105,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -69,7 +69,7 @@ return [
             ],
             '6' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 120,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -77,7 +77,7 @@ return [
             ],
             '7' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 135,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -85,7 +85,7 @@ return [
             ],
             '8' => [
                 'left_1'=> 30,
-                'left_2'=> 100,
+                'left_2'=> 125,
                 'right' => 150,
                 'font' => 'helvetica',
                 'style' => 'b',

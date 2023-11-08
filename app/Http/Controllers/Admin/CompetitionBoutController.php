@@ -74,7 +74,7 @@ class CompetitionBoutController extends Controller
                 ->groupBy('custom_bouts.category')
                 ->groupBy('custom_bouts.gender')
                 
-                ->orderBy('custom_bouts.id')
+                ->orderBy('custom_bouts.bout_number')
                 ->get();
             } else {
                 $bout_records = [];
@@ -305,6 +305,12 @@ class CompetitionBoutController extends Controller
             'alert-type' => 'success'
         ], 200);
     }
+
+    public function download_all_bout($decrypted_comp_id, $bout_id, $custom_bout_id) 
+    {
+
+    }
+
     public function download_bout($decrypted_comp_id, $bout_id, $custom_bout_id)
     {
 
@@ -352,7 +358,7 @@ class CompetitionBoutController extends Controller
         $fpdi = new FPDI;
         
         $filePath = "competition/template/".$player_count.".pdf";
-        $outputFilePath = "competition/tmp/".$decrypted_comp_id."_".$custom_bout_id."_output.pdf";
+        $outputFilePath = $compModel->id."_". $bout_record->bout_number.".pdf";
         
         $count = $fpdi->setSourceFile($filePath);
   
@@ -373,13 +379,13 @@ class CompetitionBoutController extends Controller
             // $text = "19TH International Wadokai Karate Championship-2023";
             $fpdi->Text($left,$top,$compModel->name);
 
-            $left = 260;
+            $left = 255;
             $top = 21;
-            $text = "B-".$bout_record->bout_number;
-            if($bout_record->gender == "Female") {
-                $text = "G-".$bout_record->bout_number;
-            }
-            $fpdi->Text($left,$top,$text);
+            // $text = "B-".$bout_record->bout_number;
+            // if($bout_record->gender == "Female") {
+            //     $text = "G-".$bout_record->bout_number;
+            // }
+            $fpdi->Text($left,$top,$bout_record->bout_number);
             
             $left = 50;
             $top = 25;
@@ -413,7 +419,7 @@ class CompetitionBoutController extends Controller
            
         }
   
-         $fpdi->Output($outputFilePath, 'F');
+         $fpdi->Output('D', $outputFilePath, 'F');
          return response()->file($outputFilePath);
     }
 
@@ -431,8 +437,9 @@ class CompetitionBoutController extends Controller
         $fontsize = $competition_conf['fontsize']; 
         
         $fpdi->SetFont($font, $style, $fontsize);
-        $fpdi->Text($left_1,$top,strtoupper($player_data->full_name));
-        $fpdi->Text($left_2,$top,strtoupper($player_data->external_coach_name));
+        $fpdi->Text($left_1,$top,$player_data->full_name);
+        $fpdi->SetFont($font, $style, $fontsize-4);
+        $fpdi->Text($left_2,$top,$player_data->external_coach_name);
         // $this->print_text($fpdi, $left_1, $top, strtoupper($player_data["full_name"]), 15);
         // $this->print_text($fpdi, $left_2, $top, strtoupper($player_data["external_coach_name"]), 15);
         // strtoupper

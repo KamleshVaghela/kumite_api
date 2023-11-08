@@ -14,7 +14,7 @@
                     @if(count($bout_records) > 0)
                         <div class="d-flex justify-content-center">
                             <div class="d-inline p-4 text-white">
-                                <a target="_blank" href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$bout_id.'/'.$custom_bout_id.'/download_bout')}}">
+                                <a target="_blank" href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$bout_id.'/'.$custom_bout_id.'/download_all_bout')}}">
                                 <i class="material-icons" data-toggle="tooltip" title="Download Bout Pdf">file_download</i>
                                 </a>
                             </div>
@@ -30,11 +30,7 @@
                                         data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$rec->bouts_id.'/'.$rec->custom_bout_id.'/participants')}}"
                                         name="li_participants"
                                     >
-                                        @if($rec->gender =="Male")
-                                            B-{{$rec->bout_number}} : {{$rec->bouts_category}}
-                                        @elseif($rec->gender =="Female")
-                                            G-{{$rec->bout_number}} : {{$rec->bouts_category}}
-                                        @endif
+                                        {{$rec->bout_number}} : {{$rec->bouts_category}}
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>
                                     
                                     </li>

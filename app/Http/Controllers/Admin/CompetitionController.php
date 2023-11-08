@@ -224,7 +224,7 @@ class CompetitionController extends Controller
                 }
             )
             ->where('KARATE_KA.KARATE_KA_ID', $competition_part->KARATE_KA_ID)
-            ->select("KARATE_KA.*", "RANK_MST.RANK" ,"DOJO_MST.DOJO_NAME", "SCHOOL_MASTER.SCHOOL_NAME",
+            ->select("KARATE_KA.*", DB::raw("KARATE_KA.TITLE"),DB::raw("IFNULL(KARATE_KA.NAME,'N/A') AS NAME"),DB::raw("IFNULL(KARATE_KA.M_NAME,'N/A') as M_NAME"),DB::raw("IFNULL(KARATE_KA.L_NAME,'N/A') as L_NAME"),  "RANK_MST.RANK" ,"DOJO_MST.DOJO_NAME", "SCHOOL_MASTER.SCHOOL_NAME",
             "COACH.COACH_NAME", "COACH.COACH_CODE", "DISTRICT_GEO.DISTRICT",
             "X.NoOfPart", "Y.NoOfYear")
             ->first();    
@@ -253,7 +253,7 @@ class CompetitionController extends Controller
                 }            
                 // $compParticipant->team = 
 
-                $compParticipant->full_name = $karateKa->NAME.' '.$karateKa->L_NAME;
+                $compParticipant->full_name = $karateKa->TITLE.' '.$karateKa->NAME.' '.$karateKa->M_NAME.' '.$karateKa->L_NAME;
                 if($karateKa->TITLE =="Mr") {
                     $compParticipant->gender = "Male";
                 } else {
@@ -653,6 +653,8 @@ class CompetitionController extends Controller
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
         $data = BoutTempExcel::where('competition_id',$compModel->id)->delete();
         $bouts = customBout::where('competition_id',$compModel->id)->delete();
+        $boutParticipantDetails = BoutParticipantDetail::where('competition_id',$compModel->id)->delete();
+
         Excel::import(new CompDataImport($compModel->id), 
                       $request->file('file')->store('files'));
 
@@ -661,8 +663,8 @@ class CompetitionController extends Controller
         // ->orderBy('bout_number')
         ->orderBy('category')
         ->get();
-        $male_cnt = 1;
-        $female_cnt = 1;
+        // $male_cnt = 1;
+        // $female_cnt = 1;
         foreach($excelRecords as $records) {
             $boutData = customBout::where('competition_id', $records->competition_id)
                 ->where('gender',$records->gender)
@@ -676,14 +678,15 @@ class CompetitionController extends Controller
                 $boutData->competition_id = $records->competition_id;
                 $boutData->gender = $records->gender;
                 $boutData->category = $records->category;
-                if ($records->gender == "Male") {
-                    $boutData->bout_number = $male_cnt;
-                    $male_cnt = $male_cnt + 1;
-                }
-                else {
-                    $boutData->bout_number = $female_cnt;
-                    $female_cnt = $female_cnt + 1;
-                }
+                $boutData->bout_number= $records->bout_number;
+                // if ($records->gender == "Male") {
+                //     $boutData->bout_number = $male_cnt;
+                //     $male_cnt = $male_cnt + 1;
+                // }
+                // else {
+                //     $boutData->bout_number = $female_cnt;
+                //     $female_cnt = $female_cnt + 1;
+                // }
                 $boutData->save();
             }
 

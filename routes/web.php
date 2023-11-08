@@ -73,6 +73,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::controller(App\Http\Controllers\Admin\CompetitionBoutController::class)->group(function () {
             Route::get('/competition/board/{encrypted_comp_id}/bout/index', 'index')->name('admin.board.bout');
             Route::get('/competition/board/{encrypted_comp_id}/bout/report', 'report')->name('admin.board.bout.report');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/download_all_bout', 'download_all_bout')->name('admin.board.bout.download_all_bout');
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table', 'data_table')->name('admin.board.bout.data_table');
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table/report', 'data_table_report')->name('admin.board.bout.data_table.report');
 
