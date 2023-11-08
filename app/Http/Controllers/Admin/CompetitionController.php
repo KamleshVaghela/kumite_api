@@ -515,31 +515,32 @@ class CompetitionController extends Controller
     public function resultDetails($decrypted_comp_id, Request $request)
     {
         $details_key = $request->query('details_key');
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
         $result_data = DB::select('
             SELECT external_coach_name,  SUM(total_gold) as total_gold, SUM(total_silver) as total_silver, SUM(total_bronze_1) as total_bronze_1, SUM(total_bronze_2) as total_bronze_2 
             FROM (
                 SELECT F.external_coach_name, count(C.first) as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
                 FROM custom_bouts C 
                 INNER join participants F on C.first = F.id
-                where C.competition_id=9
+                where C.competition_id='.$compModel->id.' 
                 group by F.external_coach_name
                 UNION ALL 
                 SELECT F.external_coach_name, 0 as total_gold, count(C.second) as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
                 FROM custom_bouts C 
                 INNER join participants F on C.second = F.id
-                where C.competition_id=9
+                where C.competition_id='.$compModel->id.' 
                 group by F.external_coach_name
                 UNION ALL 
                 SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, count(C.third_1) as total_bronze_1 , 0 as total_bronze_2
                 FROM custom_bouts C 
                 INNER join participants F on C.third_1 = F.id
-                where C.competition_id=9
+                where C.competition_id='.$compModel->id.' 
                 group by F.external_coach_name
                 UNION ALL 
                 SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, count(C.third_2) as total_bronze_2 
                 FROM custom_bouts C 
                 INNER join participants F on C.third_2 = F.id
-                where C.competition_id=9
+                where C.competition_id='.$compModel->id.' 
                 group by F.external_coach_name
             ) X 
             GROUP BY external_coach_name
