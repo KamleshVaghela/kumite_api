@@ -40,6 +40,9 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}', 'boardIndex')->name('admin.board');
             Route::get('/competition/board/{encrypted_comp_id}/report', 'boardReport')->name('admin.board.report');
 
+            Route::get('/competition/board/{encrypted_comp_id}/refresh_data', 'refreshData')->name('admin.board.refresh_data');
+            Route::post('/competition/board/{encrypted_comp_id}/refresh_data', 'saveRefreshData')->name('admin.board.save_refresh_data');
+
             Route::get('/competition/board/{encrypted_comp_id}/competition_details', 'competitionDetails')->name('admin.board.competition_details');
             Route::post('/competition/board/{encrypted_comp_id}/competition_details', 'saveCompetitionDetails')->name('admin.board.save_competition_details');
 
@@ -79,6 +82,8 @@ Route::group(['middleware' => 'web'], function () {
 
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.participants');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/download_bout', 'download_bout')->name('admin.board.bout.download_bout');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/change_bout', 'change_bout')->name('admin.board.bout.change_bout');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/save_change_bout', 'save_change_bout')->name('admin.board.bout.save_change_bout');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.karate_ka');
             Route::post('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/save_data', 'save_data')->name('admin.board.bout.save_data');
 

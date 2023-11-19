@@ -363,6 +363,48 @@ class CompetitionController extends Controller
         ], 200);
     }
 
+    public function refreshData($decrypted_comp_id, Request $request)
+    {
+        $details_key = $request->query('details_key');
+
+        $pendingPartCompetitionSql= " SELECT A.*, K.TITLE, IFNULL(K.NAME,'N/A') AS NAME, IFNULL(K.M_NAME,'N/A') as M_NAME,IFNULL(K.L_NAME,'N/A') as L_NAME
+        FROM ad171e2e_rksys_app.part_competition A 
+        inner join ad171e2e_rksys_app.KARATE_KA K on K.KARATE_KA_ID = A.KARATE_KA_ID
+        LEFT JOIN participants C on A.PART_COMP_ID = C.external_unique_id
+        where A.COMP_ID=$decrypted_comp_id AND isnull(C.id) ";
+
+        $pendingPartCompetitions = DB::select($pendingPartCompetitionSql);
+
+        return View('admin.competition.board.refresh_data',compact('details_key'))
+        ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('pendingPartCompetitions',$pendingPartCompetitions);
+    }
+
+    public function saveRefreshData($decrypted_comp_id, Request $request)
+    {
+        $details_key = $request->query('details_key');
+
+        $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+
+        $pendingPartCompetitionSql= " SELECT A.* 
+        FROM ad171e2e_rksys_app.part_competition A 
+        LEFT JOIN participants C on A.PART_COMP_ID = C.external_unique_id
+        where A.COMP_ID=$decrypted_comp_id AND isnull(C.id) ";
+
+        $pendingPartCompetitions = DB::select($pendingPartCompetitionSql);
+
+        foreach($pendingPartCompetitions as $data) {
+            $this->refreshParticipantDetails($data, $competition, $compModel);
+        }
+        
+        return response([
+            'data' => $pendingPartCompetitions,
+            'message' => 'Data refreshed successfully',
+            'alert-type' => 'success'
+        ], 200);
+    }
+
     public function importantDates($decrypted_comp_id, Request $request)
     {
         $details_key = $request->query('details_key');
@@ -544,6 +586,7 @@ class CompetitionController extends Controller
                 group by F.external_coach_name
             ) X 
             GROUP BY external_coach_name
+            ORDER BY total_gold desc,total_silver desc
         ');
 
         return View('admin.competition.board.result_details',compact('details_key'))
@@ -665,6 +708,7 @@ class CompetitionController extends Controller
         ->orderBy('category')
         ->get();
         // $male_cnt = 1;
+        $participant_cnt = 1;
         // $female_cnt = 1;
         foreach($excelRecords as $records) {
             $boutData = customBout::where('competition_id', $records->competition_id)
@@ -673,6 +717,7 @@ class CompetitionController extends Controller
                 // ->where('bout_number',$male_cnt)
                 ->first();
             if($boutData) {
+                $participant_cnt = $participant_cnt + 1;
 
             } else {
                 $boutData = new customBout();
@@ -689,13 +734,14 @@ class CompetitionController extends Controller
                 //     $female_cnt = $female_cnt + 1;
                 // }
                 $boutData->save();
+                $participant_cnt = 1;
             }
 
             $compBoutParticipantDetail = new BoutParticipantDetail();
             $compBoutParticipantDetail->competition_id = $records->competition_id;
             $compBoutParticipantDetail->custom_bouts_id = $boutData->id;
             $compBoutParticipantDetail->participant_id = $records->unique_id;
-            $compBoutParticipantDetail->participant_sequence = 1;
+            $compBoutParticipantDetail->participant_sequence = $participant_cnt;
             $compBoutParticipantDetail->user_id = Auth::user()->id;
             $compBoutParticipantDetail->last_modified = \Carbon\Carbon::now();
             $compBoutParticipantDetail->last_modified_user_id = Auth::user()->id;

@@ -8,6 +8,51 @@
       </tr>
     </thead>
     <tbody>
+      @if(isset($boutObj))
+          <tr>
+            <th scope="row">11</th>
+            <td>Medal</td>
+            <td>
+              <div id="div_ajax_{{$details_key}}">
+              </div>
+              <div class="modal-body">
+                  <form class="px-4 needs-validation" id="form_{{$details_key}}" name="form_{{$details_key}}"  method="POST" >
+                    @csrf
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Result</label>
+                      <select class="custom-select mr-sm-2" id="result" name="result">
+                        <option selected value="0" >None</option>
+                        <option value="1" 
+                          @if(isset($boutObj->first) and $boutObj->first == $participants->id)
+                            selected
+                          @endif
+                        >Gold</option>
+                        <option value="2"
+                          @if(isset($boutObj->second) and $boutObj->second == $participants->id)
+                            selected
+                          @endif
+                        >Silver</option>
+                        <option value="3"
+                          @if(isset($boutObj->third_1) and $boutObj->third_1 == $participants->id)
+                            selected
+                          @endif
+                        >Bronze-1</option>
+                        <option value="4"
+                        @if(isset($boutObj->third_2) and $boutObj->third_2 == $participants->id)
+                            selected
+                          @endif
+                        >Bronze-2</option>
+                      </select>
+                      <input type="hidden" id="boutKey" value="li_participants_{{$decrypted_comp_id}}_{{$bout_id}}_{{$custom_bout_id}}" />
+                      <input type="hidden" id="detailsKey" value="{{$details_key}}" />
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$bout_id.'/'.$custom_bout_id.'/'.$participants->id.'/save_data')}}" id="{{$details_key}}Accept">Accept</button>
+              </div>
+            </td>
+          </tr>
+        @endif
+        
       <tr>
         <th scope="row">1</th>
         <td>Id</td>
@@ -72,47 +117,6 @@
         <th scope="row">11</th>
         <td>Rank</td>
         <td>{{$participants->rank}}</td>
-      </tr>
-
-      <tr>
-        <th scope="row">11</th>
-        <td>Medal</td>
-        <td>
-          <div id="div_ajax_{{$details_key}}">
-          </div>
-          <div class="modal-body">
-              <form class="px-4 needs-validation" id="form_{{$details_key}}" name="form_{{$details_key}}"  method="POST" >
-                @csrf
-                <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Result</label>
-                  <select class="custom-select mr-sm-2" id="result" name="result">
-                    <option selected value="0" >None</option>
-                    <option value="1" 
-                      @if($boutObj->first == $participants->id)
-                        selected
-                      @endif
-                    >Gold</option>
-                    <option value="2"
-                      @if($boutObj->second == $participants->id)
-                        selected
-                      @endif
-                    >Silver</option>
-                    <option value="3"
-                       @if($boutObj->third_1 == $participants->id)
-                        selected
-                      @endif
-                    >Bronze-1</option>
-                    <option value="4"
-                    @if($boutObj->third_2 == $participants->id)
-                        selected
-                      @endif
-                    >Bronze-2</option>
-                  </select>
-              </form>
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$bout_id.'/'.$custom_bout_id.'/'.$participants->id.'/save_data')}}" id="{{$details_key}}Accept">Accept</button>
-          </div>
-        </td>
       </tr>
     </tbody>
   </table>

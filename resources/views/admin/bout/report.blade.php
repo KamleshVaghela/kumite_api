@@ -29,10 +29,14 @@
                                         onclick="loadContentDetails(this, 'participants', 'karate_ka')"
                                         data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/'.$rec->bouts_id.'/'.$rec->custom_bout_id.'/participants')}}"
                                         name="li_participants"
+                                        id="li_participants_{{$decrypted_comp_id}}_{{$rec->bouts_id}}_{{$rec->custom_bout_id}}"
                                     >
+                                    @if($rec->bout_number != "")
                                         {{$rec->bout_number}} : {{$rec->bouts_category}}
+                                    @else
+                                        No Bout Assigned
+                                    @endif
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>
-                                    
                                     </li>
                                 </div>
                             </div>
@@ -43,6 +47,7 @@
                                         onclick="loadContentDetails(this, 'participants', 'karate_ka')"
                                         data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/0/0/participants')}}"
                                         name="li_participants"
+                                        id="li_participants_{{$decrypted_comp_id}}_{{$rec->bouts_id}}_{{$rec->custom_bout_id}}"
                                     >
                                         [0] -> Bout not Assigned
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>

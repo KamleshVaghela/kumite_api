@@ -1,5 +1,12 @@
 <div class="container">
   <nav class="nav nav-pills flex-column flex-sm-row">
+    <a class="flex-sm-fill text-sm-center nav-link active" href="#" 
+      onclick="loadDetails(this)" 
+      data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/refresh_data"}}"
+      data-details_key="refresh_data"
+      >
+        <button class="btn btn-outline-success" type="button">Refresh Data</button>
+    </a>
     <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/data_table"}}"><button class="btn btn-outline-success" type="button">Data Table</button></a>
     <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/index"}}"><button class="btn btn-outline-primary" type="button">Board</button></a>
     <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/export_excel"}}"><button class="btn btn-outline-secondary" type="button">Export Excel</button></a>
@@ -222,6 +229,7 @@
                   <i class="material-icons">edit</i>
                 </button> --}}
         </div>
+        <div class="modal fade" id="refresh_dataModal" tabindex="-1"></div>
         <div class="modal fade" id="importExcelModal" tabindex="-1"></div>
         <div class="modal fade" id="result_detailsModal" tabindex="-1"></div>
         <div class="modal fade" id="bout_detailsModal" tabindex="-1"></div>

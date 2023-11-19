@@ -169,7 +169,9 @@ function loadDetails(that) {
             $("#form_submit_message_span").html(data.message);
             $("#form_submit_message").modal("show");
             clearProgress(details_key);
-            loadReport();
+            if($('#boutKey') == undefined) {
+                loadReport();
+            }
         }).fail(function (response) {
             $("#form_"+details_key+" .post_error").each(function () {
                 this.innerHTML = "";
@@ -190,6 +192,7 @@ function loadDetails(that) {
 
   function loadContentDetails(that, details_key, clear_me) {
     const href = $(that).data("href");
+    const data_details_key = $(that).data("details_key");
     $('li[name="li_'+details_key+'"]').removeClass("active");
     $(that).addClass("active");
     
@@ -200,11 +203,26 @@ function loadDetails(that) {
     $.get(href, function (data, status) {
         $('#div_'+details_key).html(data).trigger("create");
         $('#div_'+clear_me).html("").trigger("create");
-        if($("#form_result_details")) {
-            $(getAcceptModelId("result_details")).click(function () {
-                $(getAcceptModelId("result_details")).prop('disabled', true);
-                submitData("result_details");
+        if(data_details_key != undefined) {
+            $(getAcceptModelId(data_details_key)).click(function () {
+                $(getAcceptModelId(data_details_key)).prop('disabled', true);
+                submitData(data_details_key);
+                // const flag = loadBoutDetailsFromSubmit(); 
             });
         }
     });
   };
+
+//   function loadBoutDetailsFromSubmit() {
+//     if($('#boutKey')) {
+//         const boutKey = $('#boutKey').value;
+//         console.log(boutKey)
+//         console.log($('#'+boutKey));
+//         // loadContentDetails($('#'+boutKey), 'participants', 'karate_ka');
+//         return false;
+//         // console.log($('#'+$('#boutKey')));
+//     } else {
+//         return true;
+//     }
+//     // li_participants_69_0_191
+//   }

@@ -1,10 +1,10 @@
 <div class="container">
   <div class="row">
-    <table id="datatables-example" class="table" style="width:100%">
+    <table id="datatables-example" class="table" style="width:120%">
     <thead>
         <tr>
-          {{-- <th>Id</th>
-          <th>Competition Id</th>
+          <th>Id</th>
+           {{--<th>Competition Id</th>
           <th>external_unique_id</th>
           <th>external_coach_code</th> --}}
           <th style="width:150px;">Team</th>
@@ -22,8 +22,8 @@
     <tbody>
       @forelse($participants_records as $key=>$rec)
         <tr>
-          {{-- <td>{{ $rec->id }}</td>
-          <td>{{ $rec->competition_id }}</td>
+          <td>{{ $rec->id }}</td>
+          {{-- <td>{{ $rec->competition_id }}</td>
           <td>{{ $rec->external_unique_id }}</td>
           <td>{{ $rec->external_coach_code }}</td> --}}
           <td>{{ $rec->team }}</td>
@@ -45,18 +45,20 @@
     </tbody>
     <tfoot>
       <tr>
-        {{-- <th>Id</th>
-        <th>Competition Id</th>
+         <th>Id</th>
+         {{--<th>Competition Id</th>
         <th>external_unique_id</th>
         <th>external_coach_code</th> --}}
         <th style="width:150px;">Team</th>
-        <th style="width:250px;">Bout Category</th>
-        <th style="width:200px;">Full Name</th>
-        <th>Gender</th>
-        <th>Age</th>
-        <th>Weight</th>
-        <th>Rank</th>
-        <th>Bout Id</th>
+          <th style="width:250px;">Bout Category</th>
+          <th style="width:200px;">Full Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th>Weight</th>
+          <th>Rank</th>
+          <th># of Competition</th>
+          <th># of Membership</th>
+          <th>Bout Id</th>
       </tr>
   </tfoot>
   </table>
