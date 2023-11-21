@@ -246,10 +246,10 @@ class CompetitionController extends Controller
                     $compParticipant->team = "CH-$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
                 } else if ($competition->TYPE == "S") {
                     //State
-                    $compParticipant->team = "D-$competition->TYPE-$karateKa->DISTRICT";
+                    $compParticipant->team = "$competition->TYPE-$karateKa->DISTRICT";
                 } else if ($competition->TYPE == "N") {
                     //National
-                    $compParticipant->team = "D-$competition->TYPE-$karateKa->DISTRICT";
+                    $compParticipant->team = "$competition->TYPE-$karateKa->DISTRICT";
                 }            
                 // $compParticipant->team = 
 

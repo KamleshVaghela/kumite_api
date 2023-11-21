@@ -100,6 +100,310 @@ return [
         6 => ['1', '2', '3', '5', '6', '7'],
         7 => ['1', '2', '3', '4', '5', '6', '7'],
         8 => ['1', '2', '3', '4', '5', '6', '7', '8'],
+        'player_location_1' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 58,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_2' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 58,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 103,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_3' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 58,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 80,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 103,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_4' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 58,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 80,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 103,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '4' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 127,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_5' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 58,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 77,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 96,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '4' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 113,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '5' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 132,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_6' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 47,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 66,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 83,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '4' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 102,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '5' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 118,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '6' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 136,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_7' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 48,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 62,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 79,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '4' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 93,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '5' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 108,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '6' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 123,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '7' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 138,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_8' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 48,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 62,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 79,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '4' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 93,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '5' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 108,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '6' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 123,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '7' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 138,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '8' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 153,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
     ],
     "start_date" => "2023/09/01"
 ];

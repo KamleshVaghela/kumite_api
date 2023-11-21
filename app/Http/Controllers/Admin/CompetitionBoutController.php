@@ -19,6 +19,13 @@ use App\Models\CompetitionPartModel;
 
 class CompetitionBoutController extends Controller
 {
+    private  $dt;
+
+    public function __construct()
+    {
+        $this->dt = Carbon::now();
+    }
+
     public function index($decrypted_comp_id)
     {
         $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
@@ -644,7 +651,7 @@ class CompetitionBoutController extends Controller
 
             $fpdi->Text($left,$top,$compModel->name);
 
-            $left = 255;
+            $left = 260;
             $top = 21;
 
             $fpdi->Text($left,$top,$bout_record->bout_number);
@@ -656,13 +663,21 @@ class CompetitionBoutController extends Controller
             $fpdi->Text($left,$top,$bout_record->category);
 
             foreach($participants_records as $key=>$rec) {
-                // dd($rec);
-                $player_key = $player_conf[$key];
-                $competition_conf = Config::get('constants.competition.player_location.'.$player_key);
-                // dd($competition_conf);
+                // dd($key);
+                // $player_key = $player_conf[$key];
+                $competition_conf = Config::get('constants.competition.player_location_'.$player_count.'.'.$key+1);
+                // if ($key == 3)
+                //     dd($competition_conf);
                 $this->print_player_text($fpdi, $competition_conf, $rec);
-            }           
+                
+                $left = 200;
+                $top = 200;
+                $fpdi->SetFont("helvetica", "i", 10);
+    
+                $fpdi->Text($left,$top,"Bout Generated on ".$this->dt->toDateTimeString());
+            }
         }
+        $fpdi = $this->generate_back_page($fpdi, $bout_record, $compModel);
         return array( $fpdi, $outputFilePath);
     }
 
@@ -672,6 +687,48 @@ class CompetitionBoutController extends Controller
         $fpdi->Output('D', $outputFilePath, 'F');
     }
 
+    public function generate_back_page($fpdi, $bout_record, $compModel)
+    {
+        $backPagefilePath = "competition/template/back_page.pdf";
+
+        $count = $fpdi->setSourceFile($backPagefilePath);
+  
+        for ($i=1; $i<=$count; $i++) {
+  
+            $template = $fpdi->importPage($i);
+            $size = $fpdi->getTemplateSize($template);
+            $fpdi->AddPage($size['orientation'], array($size['width'], $size['height']));
+            $fpdi->useTemplate($template);
+
+            $left = 25;
+            $top = 10;
+            $fpdi->SetFont("helvetica", "i", 12);
+            $fpdi->Text($left,$top,$compModel->name);
+
+            $left = 25;
+            $top = 15;
+            $fpdi->SetFont("helvetica", "i", 12);
+            $fpdi->Text($left,$top,$bout_record->category);
+
+            $left = 255;
+            $top = 30;
+            $fpdi->SetFont("helvetica", "b", 17);
+            $fpdi->Text($left,$top,$bout_record->bout_number);
+
+            $left = 270;
+            $top = 84;
+            $fpdi->SetFont("helvetica", "b", 17);
+            $fpdi->Text($left,$top,$bout_record->tatami);
+
+
+            $left = 200;
+            $top = 200;
+            $fpdi->SetFont("helvetica", "i", 10);
+
+            $fpdi->Text($left,$top,"Bout Generated on ".$this->dt->toDateTimeString());
+        }
+        return $fpdi;
+    }
 
     public function result_view($decrypted_comp_id, $bout_id, $custom_bout_id) {
 
@@ -688,7 +745,8 @@ class CompetitionBoutController extends Controller
         $fpdi->SetFont($font, $style, $fontsize);
         $fpdi->Text($left_1,$top,$player_data->full_name);
         $fpdi->SetFont($font, $style, $fontsize-4);
-        $fpdi->Text($left_2,$top,$player_data->external_coach_name);
+        $fpdi->Text($left_2,$top - 2,ucwords(strtolower($player_data->external_coach_name)));
+        $fpdi->Text($left_2,$top + 2,ucwords(strtolower($player_data->team)));
         // $this->print_text($fpdi, $left_1, $top, strtoupper($player_data["full_name"]), 15);
         // $this->print_text($fpdi, $left_2, $top, strtoupper($player_data["external_coach_name"]), 15);
         // strtoupper
