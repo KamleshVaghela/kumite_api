@@ -99,6 +99,9 @@
     @if($route == 'admin.board.bout')
         <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
+    @if($route == 'admin.board.bout.results')
+        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    @endif
     @if($route == 'admin.default_category')
         <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif

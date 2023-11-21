@@ -13,6 +13,7 @@ class BoutTempExcel extends Model
         'unique_id', 
         'bout_number', 
         'category', 
+        'tatami',
         'competition_id',
         'gender',
     ];

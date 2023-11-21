@@ -767,48 +767,108 @@ class CompetitionBoutController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function results_index($decrypted_comp_id)
     {
-        //
+        $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+        
+        return View('admin.bout.results_index',compact('decrypted_comp_id'))
+        ->with('competition',$competition);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function results_report($decrypted_comp_id)
     {
-        //
+        $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+        return View('admin.bout.results_report',compact('decrypted_comp_id'))
+        ->with('view_type',"index")
+        ->with('competition',$competition);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function results_report_view_type($decrypted_comp_id, $view_type, Request $request)
     {
-        //
+        $details_key = $request->query('details_key');
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
+
+        $result_data = null;
+
+        switch($view_type) {
+            case('coach'):
+                $result_data = DB::select('
+                    SELECT external_coach_name,  SUM(total_gold) as total_gold, SUM(total_silver) as total_silver, SUM(total_bronze_1) as total_bronze_1, SUM(total_bronze_2) as total_bronze_2 
+                    FROM (
+                        SELECT F.external_coach_name, count(C.first) as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        FROM custom_bouts C 
+                        INNER join participants F on C.first = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL 
+                        SELECT F.external_coach_name, 0 as total_gold, count(C.second) as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        FROM custom_bouts C 
+                        INNER join participants F on C.second = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL 
+                        SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, count(C.third_1) as total_bronze_1 , 0 as total_bronze_2
+                        FROM custom_bouts C 
+                        INNER join participants F on C.third_1 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL 
+                        SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, count(C.third_2) as total_bronze_2 
+                        FROM custom_bouts C 
+                        INNER join participants F on C.third_2 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                    ) X 
+                    GROUP BY external_coach_name
+                    ORDER BY total_gold desc,total_silver desc
+                ');
+                break;
+
+            case('team'):
+                $result_data = DB::select('
+                    SELECT team,  SUM(total_gold) as total_gold, SUM(total_silver) as total_silver, SUM(total_bronze_1) as total_bronze_1, SUM(total_bronze_2) as total_bronze_2 
+                    FROM (
+                        SELECT F.team, count(C.first) as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        FROM custom_bouts C 
+                        INNER join participants F on C.first = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                        UNION ALL 
+                        SELECT F.team, 0 as total_gold, count(C.second) as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        FROM custom_bouts C 
+                        INNER join participants F on C.second = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                        UNION ALL 
+                        SELECT F.team, 0 as total_gold , 0 as total_silver, count(C.third_1) as total_bronze_1 , 0 as total_bronze_2
+                        FROM custom_bouts C 
+                        INNER join participants F on C.third_1 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                        UNION ALL 
+                        SELECT F.team, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, count(C.third_2) as total_bronze_2 
+                        FROM custom_bouts C 
+                        INNER join participants F on C.third_2 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                    ) X 
+                    GROUP BY team
+                    ORDER BY total_gold desc,total_silver desc
+                ');
+                break;
+
+            default:
+                $msg = 'Something went wrong.';
+        }
+
+        return View('admin.bout.results_report',compact('decrypted_comp_id'))
+        ->with('view_type',$view_type)
+        ->with('details_key', $details_key)
+        ->with('competition',$competition)
+        ->with('result_data',$result_data)
+        ;
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

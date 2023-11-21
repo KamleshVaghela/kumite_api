@@ -93,6 +93,10 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/edit', 'edit')->name('admin.board.bout.edit');
             Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/update', 'update')->name('admin.board.bout.update');
             Route::post('/competition/board/{encrypted_comp_id}/bout/{encrypted_bout_id}/destroy', 'destroy')->name('admin.board.bout.destroy');
+
+            Route::get('/competition/board/{encrypted_comp_id}/bout/results/index', 'results_index')->name('admin.board.bout.results');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/results/report', 'results_report')->name('admin.board.bout.results_report');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/results/report/{view_type}', 'results_report_view_type')->name('admin.board.bout.results_report.view_type');
         });
 
         Route::controller(App\Http\Controllers\Admin\DefaultCategoryController::class)->group(function () {

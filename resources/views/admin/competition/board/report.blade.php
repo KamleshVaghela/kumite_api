@@ -16,12 +16,13 @@
         data-details_key="importExcel"
     >
     <button class="btn btn-outline-info" type="button">Import Excel</button></a>
-    <a class="flex-sm-fill text-sm-center nav-link active"  href="#"
+    <!-- <a class="flex-sm-fill text-sm-center nav-link active"  href="#"
         onclick="loadDetails(this)" 
         data-href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/result_details"}}" 
         data-details_key="result_details"
     >
-    <button class="btn btn-outline-danger" type="button">Results</button></a>
+    <button class="btn btn-outline-danger" type="button">Results</button></a> -->
+    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank" href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/results/index"}}"><button class="btn btn-outline-primary" type="button">Results</button></a>
   </nav>
   <div class="row">
     <div class="col-sm">

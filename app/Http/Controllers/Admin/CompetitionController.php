@@ -237,13 +237,13 @@ class CompetitionController extends Controller
                 
                 if ($competition->TYPE == "ISC") {
                     //Inter School
-                    $compParticipant->team = "IS-$competition->TYPE-$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
+                    $compParticipant->team = "$competition->TYPE-$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
                 } else if ($competition->TYPE == "IDJ") {
                     //Inter Dojo
-                    $compParticipant->team = "ID-$competition->TYPE-$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
+                    $compParticipant->team = "$competition->TYPE-$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
                 } else if ($competition->TYPE == "D") {
                     //District
-                    $compParticipant->team = "CH-$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
+                    $compParticipant->team = "$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
                 } else if ($competition->TYPE == "S") {
                     //State
                     $compParticipant->team = "$competition->TYPE-$karateKa->DISTRICT";
@@ -724,6 +724,7 @@ class CompetitionController extends Controller
                 $boutData->competition_id = $records->competition_id;
                 $boutData->gender = $records->gender;
                 $boutData->category = $records->category;
+                $boutData->tatami = $records->tatami;
                 $boutData->bout_number= $records->bout_number;
                 // if ($records->gender == "Male") {
                 //     $boutData->bout_number = $male_cnt;
