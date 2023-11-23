@@ -366,14 +366,26 @@ class CompetitionController extends Controller
     public function refreshData($decrypted_comp_id, Request $request)
     {
         $details_key = $request->query('details_key');
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+
+        $tmpIdsSql= "select I, group_concat(external_unique_id) as external_unique_id 
+        from (
+            SELECT MOD(id, 5) as I, external_unique_id FROM participants where competition_id=$compModel->id 
+        ) X 
+        group by I ";
+        $tmpIds = DB::select($tmpIdsSql);
+
+        $idsCondition = "";
+        foreach($tmpIds as $data) {
+            $idsCondition = $idsCondition . " AND A.PART_COMP_ID NOT IN ( ".$data->external_unique_id.")";
+        }
 
         $pendingPartCompetitionSql= " SELECT A.*, K.TITLE, IFNULL(K.NAME,'N/A') AS NAME, IFNULL(K.M_NAME,'N/A') as M_NAME,IFNULL(K.L_NAME,'N/A') as L_NAME
-        FROM ad171e2e_rksys_app.part_competition A 
-        inner join ad171e2e_rksys_app.KARATE_KA K on K.KARATE_KA_ID = A.KARATE_KA_ID
-        LEFT JOIN participants C on A.PART_COMP_ID = C.external_unique_id
-        where A.COMP_ID=$decrypted_comp_id AND isnull(C.id) ";
+        FROM PART_COMPETITION A 
+        inner join KARATE_KA K on K.KARATE_KA_ID = A.KARATE_KA_ID
+        where A.COMP_ID=$decrypted_comp_id  $idsCondition";
 
-        $pendingPartCompetitions = DB::select($pendingPartCompetitionSql);
+        $pendingPartCompetitions = DB::connection('rksys_app')->select($pendingPartCompetitionSql);
 
         return View('admin.competition.board.refresh_data',compact('details_key'))
         ->with('decrypted_comp_id',$decrypted_comp_id)
@@ -387,12 +399,24 @@ class CompetitionController extends Controller
         $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
 
-        $pendingPartCompetitionSql= " SELECT A.* 
-        FROM ad171e2e_rksys_app.part_competition A 
-        LEFT JOIN participants C on A.PART_COMP_ID = C.external_unique_id
-        where A.COMP_ID=$decrypted_comp_id AND isnull(C.id) ";
+        $tmpIdsSql= "select I, group_concat(external_unique_id) as external_unique_id 
+        from (
+            SELECT MOD(id, 5) as I, external_unique_id FROM participants where competition_id=$compModel->id 
+        ) X 
+        group by I ";
+        $tmpIds = DB::select($tmpIdsSql);
 
-        $pendingPartCompetitions = DB::select($pendingPartCompetitionSql);
+        $idsCondition = "";
+        foreach($tmpIds as $data) {
+            $idsCondition = $idsCondition . " AND A.PART_COMP_ID NOT IN ( ".$data->external_unique_id.")";
+        }
+
+        $pendingPartCompetitionSql= " SELECT A.*, K.TITLE, IFNULL(K.NAME,'N/A') AS NAME, IFNULL(K.M_NAME,'N/A') as M_NAME,IFNULL(K.L_NAME,'N/A') as L_NAME
+        FROM PART_COMPETITION A 
+        inner join KARATE_KA K on K.KARATE_KA_ID = A.KARATE_KA_ID
+        where A.COMP_ID=$decrypted_comp_id  $idsCondition";
+
+        $pendingPartCompetitions = DB::connection('rksys_app')->select($pendingPartCompetitionSql);
 
         foreach($pendingPartCompetitions as $data) {
             $this->refreshParticipantDetails($data, $competition, $compModel);
