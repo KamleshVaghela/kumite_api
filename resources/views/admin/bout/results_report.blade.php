@@ -25,7 +25,7 @@
 
     @case('coach')
         <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
+            <div class="modal-content" style="min-width: 700px">
                 <div class="modal-header">
                     <h5 class="modal-title" id="{{$details_key}}ModalScrollableTitle">Result Details</h5>
             </div>
@@ -39,13 +39,15 @@
                         <th scope="row">Gold</th>
                         <th scope="row">Silver</th>
                         <th scope="row">Bronze</th>
+                        <th scope="row">Total Point(s)</th>
                     </tr>
                 @forelse($result_data as $key=>$rec)
                     <tr>
                         <td scope="row">{{$rec->external_coach_name}}</td>
-                        <td scope="row">{{$rec->total_gold}}</td>
-                        <td scope="row">{{$rec->total_silver}}</td>
-                        <td scope="row">{{$rec->total_bronze_1 + $rec->total_bronze_2}}</td>
+                        <td scope="row">{{$rec->total_gold}} ({{ ($rec->total_gold) * 3}})</td>
+                        <td scope="row">{{$rec->total_silver}} ({{ ($rec->total_silver) * 2 }})</td>
+                        <td scope="row">{{$rec->total_bronze_1 + $rec->total_bronze_2}} ({{$rec->total_bronze_1 + $rec->total_bronze_2}})</td>
+                        <td scope="row"> {{ (($rec->total_gold) * 3) + ( ($rec->total_silver) * 2 ) + ($rec->total_bronze_1 + $rec->total_bronze_2) }}</td>
                     </tr>
                     @empty
                         <p class="bg-danger text-white p-1">No Item data found</p>
@@ -62,7 +64,7 @@
 
     @case('team')
         <div class="modal-dialog modal-dialog-scrollable">
-            <div class="modal-content">
+            <div class="modal-content" style="min-width: 700px">
                 <div class="modal-header">
                     <h5 class="modal-title" id="{{$details_key}}ModalScrollableTitle">Result Details</h5>
             </div>
@@ -76,13 +78,15 @@
                         <th scope="row">Gold</th>
                         <th scope="row">Silver</th>
                         <th scope="row">Bronze</th>
+                        <th scope="row">Total Point(s)</th>
                     </tr>
                 @forelse($result_data as $key=>$rec)
                     <tr>
                         <td scope="row">{{$rec->team}}</td>
-                        <td scope="row">{{$rec->total_gold}}</td>
-                        <td scope="row">{{$rec->total_silver}}</td>
-                        <td scope="row">{{$rec->total_bronze_1 + $rec->total_bronze_2}}</td>
+                        <td scope="row">{{$rec->total_gold}} ({{ ($rec->total_gold) * 3}})</td>
+                        <td scope="row">{{$rec->total_silver}} ({{ ($rec->total_silver) * 2 }})</td>
+                        <td scope="row">{{$rec->total_bronze_1 + $rec->total_bronze_2}} ({{$rec->total_bronze_1 + $rec->total_bronze_2}})</td>
+                        <td scope="row"> {{ (($rec->total_gold) * 3) + ( ($rec->total_silver) * 2 ) + ($rec->total_bronze_1 + $rec->total_bronze_2) }}</td>
                     </tr>
                     @empty
                         <p class="bg-danger text-white p-1">No Item data found</p>
