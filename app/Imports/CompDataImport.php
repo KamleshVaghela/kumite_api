@@ -26,6 +26,7 @@ class CompDataImport implements ToModel, WithStartRow //ToCollection
                 'bout_number' => $row[2],
                 'category' => $row[3],
                 'tatami' => $row[4],
+                'session' => $row[5],
                 'competition_id' => (int) $this->competition_id,
                 'gender' => $row[1],
             ]);

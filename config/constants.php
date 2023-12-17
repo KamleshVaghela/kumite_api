@@ -113,7 +113,7 @@ return [
         'player_location_2' => [
             '1' => [
                 'left_1'=> 30,
-                'left_2'=> 120,
+                'left_2'=> 100,
                 'right' => 58,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -121,7 +121,7 @@ return [
             ],
             '2' => [
                 'left_1'=> 30,
-                'left_2'=> 120,
+                'left_2'=> 100,
                 'right' => 103,
                 'font' => 'helvetica',
                 'style' => 'b',
@@ -192,7 +192,7 @@ return [
             '1' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 58,
+                'right' => 63,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -200,7 +200,7 @@ return [
             '2' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 77,
+                'right' => 82,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -208,7 +208,7 @@ return [
             '3' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 96,
+                'right' => 100,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -216,7 +216,7 @@ return [
             '4' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 113,
+                'right' => 119,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -224,7 +224,7 @@ return [
             '5' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 132,
+                'right' => 138,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -234,7 +234,7 @@ return [
             '1' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 47,
+                'right' => 48,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -242,7 +242,7 @@ return [
             '2' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 66,
+                'right' => 67,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -250,7 +250,7 @@ return [
             '3' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 83,
+                'right' => 84,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -258,7 +258,7 @@ return [
             '4' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 102,
+                'right' => 103,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -266,7 +266,7 @@ return [
             '5' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 118,
+                'right' => 119,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -274,7 +274,7 @@ return [
             '6' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 136,
+                'right' => 137,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -284,7 +284,7 @@ return [
             '1' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 48,
+                'right' => 43,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -292,7 +292,7 @@ return [
             '2' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 62,
+                'right' => 58,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -300,7 +300,7 @@ return [
             '3' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 79,
+                'right' => 72,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -308,7 +308,7 @@ return [
             '4' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 93,
+                'right' => 87,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -316,7 +316,7 @@ return [
             '5' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 108,
+                'right' => 102,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -324,7 +324,7 @@ return [
             '6' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 123,
+                'right' => 118,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -332,7 +332,7 @@ return [
             '7' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 138,
+                'right' => 133,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -342,7 +342,7 @@ return [
             '1' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 48,
+                'right' => 44,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -350,7 +350,7 @@ return [
             '2' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 62,
+                'right' => 58,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -358,7 +358,7 @@ return [
             '3' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 79,
+                'right' => 73,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -366,7 +366,7 @@ return [
             '4' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 93,
+                'right' => 89,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -374,7 +374,7 @@ return [
             '5' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 108,
+                'right' => 103,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -382,7 +382,7 @@ return [
             '6' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 123,
+                'right' => 118,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -390,7 +390,7 @@ return [
             '7' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 138,
+                'right' => 133,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16
@@ -398,7 +398,81 @@ return [
             '8' => [
                 'left_1'=> 30,
                 'left_2'=> 120,
-                'right' => 153,
+                'right' => 148,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+        ],
+        'player_location_9' => [
+            '1' => [
+                'left_1'=> 30,
+                'left_2'=> 100,
+                'right' => 44,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '2' => [
+                'left_1'=> 30,
+                'left_2'=> 100,
+                'right' => 58,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '3' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 73,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '4' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 89,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '5' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 103,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '6' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 118,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '7' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 133,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '8' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 148,
+                'font' => 'helvetica',
+                'style' => 'b',
+                'fontsize' => 16
+            ],
+            '9' => [
+                'left_1'=> 30,
+                'left_2'=> 120,
+                'right' => 163,
                 'font' => 'helvetica',
                 'style' => 'b',
                 'fontsize' => 16

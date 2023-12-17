@@ -237,19 +237,19 @@ class CompetitionController extends Controller
                 
                 if ($competition->TYPE == "ISC") {
                     //Inter School
-                    $compParticipant->team = "$competition->TYPE-$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
+                    $compParticipant->team = "$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
                 } else if ($competition->TYPE == "IDJ") {
                     //Inter Dojo
-                    $compParticipant->team = "$competition->TYPE-$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
+                    $compParticipant->team = "$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
                 } else if ($competition->TYPE == "D") {
                     //District
-                    $compParticipant->team = "$competition->TYPE-$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
+                    $compParticipant->team = "$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
                 } else if ($competition->TYPE == "S") {
                     //State
-                    $compParticipant->team = "$competition->TYPE-$karateKa->DISTRICT";
+                    $compParticipant->team = "$karateKa->DISTRICT";
                 } else if ($competition->TYPE == "N") {
                     //National
-                    $compParticipant->team = "$competition->TYPE-$karateKa->DISTRICT";
+                    $compParticipant->team = "$karateKa->DISTRICT";
                 }            
                 // $compParticipant->team = 
 
@@ -268,7 +268,11 @@ class CompetitionController extends Controller
                 $compParticipant->no_of_year = $karateKa->NoOfYear;
         
                 $compParticipant->age = $competition_part->AGE;
-                $compParticipant->weight = $competition_part->WEIGHT;
+                if(fmod($competition_part->WEIGHT, 1) > 0.3) {
+                    $compParticipant->weight = $competition_part->WEIGHT;
+                } else {
+                    $compParticipant->weight = $competition_part->WEIGHT + 1;
+                }
 
                 $compParticipant->user_id = Auth::user()->id;
                 $compParticipant->last_modified = \Carbon\Carbon::now();
@@ -749,6 +753,7 @@ class CompetitionController extends Controller
                 $boutData->gender = $records->gender;
                 $boutData->category = $records->category;
                 $boutData->tatami = $records->tatami;
+                $boutData->session = $records->session;
                 $boutData->bout_number= $records->bout_number;
                 // if ($records->gender == "Male") {
                 //     $boutData->bout_number = $male_cnt;

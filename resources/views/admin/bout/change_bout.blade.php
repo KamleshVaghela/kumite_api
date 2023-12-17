@@ -34,7 +34,7 @@
 
                     <div class="form-group">
                         <label for="sequence">Sequence</label>
-                        <input type="number" class="form-control" id="sequence" name="sequence" placeholder="1-8" min="1" max="8" >
+                        <input type="number" class="form-control" id="sequence" name="sequence" placeholder="1-9" min="1" max="9" >
                         <small id="category_error" class="form-text post_error"></small>
                     </div>
 
@@ -63,6 +63,18 @@
                         <label for="category">Category</label>
                         <input type="text" class="form-control" id="category" name="category" placeholder="Category" >
                         <small id="category_error" class="form-text post_error"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tatami">Tatami</label>
+                        <input type="text" class="form-control" id="tatami" name="tatami" placeholder="Tatami" >
+                        <small id="tatami_error" class="form-text post_error"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="session">Session</label>
+                        <input type="text" class="form-control" id="session" name="session" placeholder="Session" >
+                        <small id="session_error" class="form-text post_error"></small>
                     </div>
 
                     <input type="hidden" class="form-control" id="gender" name="gender" value="{{$participants->gender}}" >

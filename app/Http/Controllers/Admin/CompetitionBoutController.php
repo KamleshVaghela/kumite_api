@@ -16,6 +16,7 @@ use Config;
 use setasign\Fpdi\Fpdi;
 use App\Models\customBout;
 use App\Models\CompetitionPartModel;
+use App\PdfRotate;
 
 class CompetitionBoutController extends Controller
 {
@@ -232,7 +233,7 @@ class CompetitionBoutController extends Controller
             LEFT JOIN bout_participant_details D on D.custom_bouts_id = C.id
             where C.competition_id=$compModel->id AND C.gender='$participant->gender' AND C.first IS NULL AND C.second IS NULL AND C.third_1 IS NULL AND C.third_2 IS NULL 
             group by C.id, C.gender,C.category, C.bout_number
-            Having total_participants < 8
+            Having total_participants < 9
             ";
         } else if($custom_bout_id != "0") {
             $boutListSql= "  
@@ -241,7 +242,7 @@ class CompetitionBoutController extends Controller
             LEFT JOIN bout_participant_details D on D.custom_bouts_id = C.id
             where C.competition_id=$compModel->id AND C.gender='$participant->gender' AND C.first IS NULL AND C.second IS NULL AND C.third_1 IS NULL AND C.third_2 IS NULL 
             group by C.id, C.gender,C.category, C.bout_number
-            Having total_participants < 8
+            Having total_participants < 9
             ";
         } else {
             $bout_type = DB::table("bout_participant_details")    
@@ -258,7 +259,7 @@ class CompetitionBoutController extends Controller
                 LEFT JOIN bout_participant_details D on D.custom_bouts_id = C.id
                 where C.competition_id=$compModel->id AND C.gender='$participant->gender' AND C.first IS NULL AND C.second IS NULL AND C.third_1 IS NULL AND C.third_2 IS NULL 
                 group by C.id, C.gender,C.category, C.bout_number
-                Having total_participants < 8
+                Having total_participants < 9
                 ";
             } else if($bout_type->custom_bouts_id_count != "0") {
                 $boutListSql= " 
@@ -267,7 +268,7 @@ class CompetitionBoutController extends Controller
                 LEFT JOIN bout_participant_details D on D.custom_bouts_id = C.id
                 where C.competition_id=$compModel->id AND C.gender='$participant->gender' AND C.first IS NULL AND C.second IS NULL AND C.third_1 IS NULL AND C.third_2 IS NULL 
                 group by C.id, C.gender,C.category, C.bout_number
-                Having total_participants < 8
+                Having total_participants < 9
                 ";
             } else {
                 $boutListSql = "";
@@ -291,6 +292,8 @@ class CompetitionBoutController extends Controller
             'bout_id' => 'required',
             'bout_number' => 'required_if:bout_id,!=,0',
             'category' => 'required_if:bout_id,!=,0',
+            'tatami' => 'required_if:bout_id,!=,0',
+            'session' => 'required_if:bout_id,!=,0',
         ]);
 
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
@@ -318,6 +321,8 @@ class CompetitionBoutController extends Controller
                 $boutData->gender = $request->gender;
                 $boutData->category = $request->category;
                 $boutData->bout_number= $request->bout_number;
+                $boutData->tatami = $request->tatami;
+                $boutData->session = $request->session;
                 $boutData->save();
 
             } else if($bout_type->custom_bouts_id_count != "0") {
@@ -326,8 +331,9 @@ class CompetitionBoutController extends Controller
                 $boutData->gender = $request->gender;
                 $boutData->category = $request->category;
                 $boutData->bout_number= $request->bout_number;
+                $boutData->tatami = $request->tatami;
+                $boutData->session = $request->session;
                 $boutData->save();
-
             }
         }
 
@@ -632,7 +638,7 @@ class CompetitionBoutController extends Controller
         $filePath = "competition/template/".$player_count.".pdf";
         $outputFilePath = "competition/tmp/".$compModel->id."_". $bout_record->bout_number.".pdf";
         
-        $count = $fpdi->setSourceFile($filePath);
+        $count = $fpdi->setSourceFileWithParserParams($filePath);
   
         for ($i=1; $i<=$count; $i++) {
   
@@ -647,34 +653,35 @@ class CompetitionBoutController extends Controller
             // $fpdi->SetTextColor(153,0,153);
   
             $left = 50;
-            $top = 15;
-
+            $top = 10;
             $fpdi->Text($left,$top,$compModel->name);
 
             $left = 260;
             $top = 21;
-
+            $fpdi->SetFont("helvetica", "b", 17);
             $fpdi->Text($left,$top,$bout_record->bout_number);
             
             $left = 50;
-            $top = 25;
+            $top = 20;
             $fpdi->SetFont("helvetica", "b", 17);
             // $text = "U7 - Male - WYO - Upto 20 Kg";
             $fpdi->Text($left,$top,$bout_record->category);
+  
+            $left = 235;
+            $top = 32;
+            $fpdi->SetFont("helvetica", "b", 17);
+           
+            $fpdi->Text($left,$top, 'Tatami '. $bout_record->tatami.' - '.$bout_record->session);
 
             foreach($participants_records as $key=>$rec) {
-                // dd($key);
-                // $player_key = $player_conf[$key];
                 $competition_conf = Config::get('constants.competition.player_location_'.$player_count.'.'.$key+1);
-                // if ($key == 3)
-                //     dd($competition_conf);
                 $this->print_player_text($fpdi, $competition_conf, $rec);
                 
                 $left = 200;
-                $top = 200;
+                $top = 205;
                 $fpdi->SetFont("helvetica", "i", 10);
     
-                $fpdi->Text($left,$top,"Bout Generated on ".$this->dt->toDateTimeString());
+                $fpdi->Text($left,$top,"Bout Generated on ".$this->dt->toDateTimeString()." by Kumite App");
             }
         }
         $fpdi = $this->generate_back_page($fpdi, $bout_record, $compModel);
@@ -684,7 +691,20 @@ class CompetitionBoutController extends Controller
     public function download_bout($decrypted_comp_id, $bout_id, $custom_bout_id)
     {
         list($fpdi, $outputFilePath) = $this->generate_bout($decrypted_comp_id, $bout_id, $custom_bout_id);
-        $fpdi->Output('D', $outputFilePath, 'F');
+        $fpdi->Output( $outputFilePath, 'F');
+
+        $pdf = new PdfRotate;
+        $outputFilePathNew = "competition/tmp/".$decrypted_comp_id."_". $bout_id."_new.pdf";
+        $pdf->rotatePdfPage($outputFilePath, $outputFilePathNew, $pdf::DEGREES_270,2);
+
+        $headers = array(
+            'Content-Type: application/pdf',
+          );
+
+        return response()->download($outputFilePathNew, $decrypted_comp_id."_". $bout_id.".pdf", $headers);
+
+        // $fpdi->Output('I', $outputFilePathNew, true);
+
     }
 
     public function generate_back_page($fpdi, $bout_record, $compModel)
@@ -702,30 +722,30 @@ class CompetitionBoutController extends Controller
 
             $left = 25;
             $top = 10;
-            $fpdi->SetFont("helvetica", "i", 12);
+            $fpdi->SetFont("helvetica", "b", 12);
             $fpdi->Text($left,$top,$compModel->name);
 
             $left = 25;
             $top = 15;
-            $fpdi->SetFont("helvetica", "i", 12);
+            $fpdi->SetFont("helvetica", "b", 12);
             $fpdi->Text($left,$top,$bout_record->category);
 
-            $left = 255;
-            $top = 30;
+            $left = 165;
+            $top = 27;
             $fpdi->SetFont("helvetica", "b", 17);
             $fpdi->Text($left,$top,$bout_record->bout_number);
 
-            $left = 270;
-            $top = 84;
+            $left = 25;
+            $top = 51;
             $fpdi->SetFont("helvetica", "b", 17);
-            $fpdi->Text($left,$top,$bout_record->tatami);
+            $fpdi->Text($left,$top, 'Tatami '. $bout_record->tatami.' - '.$bout_record->session);
 
 
-            $left = 200;
-            $top = 200;
+            $left = 120;
+            $top = 283;
             $fpdi->SetFont("helvetica", "i", 10);
 
-            $fpdi->Text($left,$top,"Bout Generated on ".$this->dt->toDateTimeString());
+            $fpdi->Text($left,$top,"Bout Generated on ".$this->dt->toDateTimeString()." by Kumite App");
         }
         return $fpdi;
     }
