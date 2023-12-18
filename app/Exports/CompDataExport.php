@@ -27,7 +27,7 @@ class CompDataExport implements FromCollection, WithHeadings, WithEvents
             DB::raw(' "TBD" as CT'), DB::raw(' "0" as tatami'), DB::raw(' "TBD" as Session'), 'full_name',
             'no_of_part',
             'no_of_year', 'team', 
-            'age', 'weight', 'rank',
+            'age', 'weight', 'rank', 'rank_kyu' ,
             DB::raw(' CONCAT(external_coach_name, "( ", external_coach_code, " )") as coach') 
         )
         ->orderBy('gender')
@@ -40,7 +40,7 @@ class CompDataExport implements FromCollection, WithHeadings, WithEvents
     }
      public function headings(): array
     {
-        return ['Unique Id', 'Gender', 'Bout Number', 'Category', 'Tatami', 'Session',  'Name', 'No of Participation', 'Membership Years', 'Team', 'Age', 'Weight', 'Rank', 'Coach'];
+        return ['Unique Id', 'Gender', 'Bout Number', 'Category', 'Tatami', 'Session',  'Name', 'No of Participation', 'Membership Years', 'Team', 'Age', 'Weight', 'Rank', 'Rank Kyu', 'Coach'];
     }
 
     public function registerEvents(): array

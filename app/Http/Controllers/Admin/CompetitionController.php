@@ -224,7 +224,9 @@ class CompetitionController extends Controller
                 }
             )
             ->where('KARATE_KA.KARATE_KA_ID', $competition_part->KARATE_KA_ID)
-            ->select("KARATE_KA.*", DB::raw("KARATE_KA.TITLE"),DB::raw("IFNULL(KARATE_KA.NAME,'N/A') AS NAME"),DB::raw("IFNULL(KARATE_KA.M_NAME,'N/A') as M_NAME"),DB::raw("IFNULL(KARATE_KA.L_NAME,'N/A') as L_NAME"),  "RANK_MST.RANK" ,"DOJO_MST.DOJO_NAME", "SCHOOL_MASTER.SCHOOL_NAME",
+            ->select("KARATE_KA.*", DB::raw("KARATE_KA.TITLE"),DB::raw("IFNULL(KARATE_KA.NAME,'N/A') AS NAME"),DB::raw("IFNULL(KARATE_KA.M_NAME,'N/A') as M_NAME"),DB::raw("IFNULL(KARATE_KA.L_NAME,'N/A') as L_NAME"),  
+            "RANK_MST.RANK" , "RANK_MST.KYU", 
+            "DOJO_MST.DOJO_NAME", "SCHOOL_MASTER.SCHOOL_NAME",
             "COACH.COACH_NAME", "COACH.COACH_CODE", "DISTRICT_GEO.DISTRICT",
             "X.NoOfPart", "Y.NoOfYear")
             ->first();    
@@ -261,12 +263,16 @@ class CompetitionController extends Controller
                 }
                 $compParticipant->rank = $karateKa->RANK;
                 $compParticipant->rank_id = $karateKa->RANK_ID;
+                $compParticipant->rank_kyu = $karateKa->KYU;
                 $compParticipant->external_coach_code = $karateKa->COACH_ID;
                 $compParticipant->external_coach_name = $karateKa->COACH_NAME;
 
                 $compParticipant->no_of_part = $karateKa->NoOfPart;
-                $compParticipant->no_of_year = $karateKa->NoOfYear;
-        
+                if( isset($karateKa->SM_ID) && $karateKa->SM_ID > 0 ) {
+                    $compParticipant->no_of_year = $karateKa->NoOfYear .' (SP) ';
+                } else {
+                    $compParticipant->no_of_year = $karateKa->NoOfYear;
+                }
                 $compParticipant->age = $competition_part->AGE;
                 if(fmod($competition_part->WEIGHT, 1) > 0.3) {
                     $compParticipant->weight = $competition_part->WEIGHT;
