@@ -53,10 +53,10 @@
                 @forelse($result_data as $key=>$rec)
                     <tr>
                         <td scope="row">{{$rec->external_coach_name}}</td>
-                        <td scope="row">{{$rec->total_gold}} ({{ ($rec->total_gold) * 3}})</td>
-                        <td scope="row">{{$rec->total_silver}} ({{ ($rec->total_silver) * 2 }})</td>
+                        <td scope="row">{{$rec->total_gold}} ({{ ($rec->total_gold) * 5}})</td>
+                        <td scope="row">{{$rec->total_silver}} ({{ ($rec->total_silver) * 3 }})</td>
                         <td scope="row">{{$rec->total_bronze_1 + $rec->total_bronze_2}} ({{$rec->total_bronze_1 + $rec->total_bronze_2}})</td>
-                        <td scope="row"> {{ (($rec->total_gold) * 3) + ( ($rec->total_silver) * 2 ) + ($rec->total_bronze_1 + $rec->total_bronze_2) }}</td>
+                        <td scope="row"> {{ (($rec->total_gold) * 5) + ( ($rec->total_silver) * 3 ) + ($rec->total_bronze_1 + $rec->total_bronze_2) }}</td>
                     </tr>
                     @empty
                         <p class="bg-danger text-white p-1">No Item data found</p>
@@ -92,10 +92,10 @@
                 @forelse($result_data as $key=>$rec)
                     <tr>
                         <td scope="row">{{$rec->team}}</td>
-                        <td scope="row">{{$rec->total_gold}} ({{ ($rec->total_gold) * 3}})</td>
-                        <td scope="row">{{$rec->total_silver}} ({{ ($rec->total_silver) * 2 }})</td>
+                        <td scope="row">{{$rec->total_gold}} ({{ ($rec->total_gold) * 5}})</td>
+                        <td scope="row">{{$rec->total_silver}} ({{ ($rec->total_silver) * 3 }})</td>
                         <td scope="row">{{$rec->total_bronze_1 + $rec->total_bronze_2}} ({{$rec->total_bronze_1 + $rec->total_bronze_2}})</td>
-                        <td scope="row"> {{ (($rec->total_gold) * 3) + ( ($rec->total_silver) * 2 ) + ($rec->total_bronze_1 + $rec->total_bronze_2) }}</td>
+                        <td scope="row"> {{ (($rec->total_gold) * 5) + ( ($rec->total_silver) * 3 ) + ($rec->total_bronze_1 + $rec->total_bronze_2) }}</td>
                     </tr>
                     @empty
                         <p class="bg-danger text-white p-1">No Item data found</p>
