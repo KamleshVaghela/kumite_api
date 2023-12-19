@@ -226,3 +226,11 @@ function loadDetails(that) {
 //     }
 //     // li_participants_69_0_191
 //   }
+function downloadFile(that) {
+    const external_coach_code = $('#external_coach_code').val();
+    console.log(external_coach_code);
+    const href = $(that).data("href");
+    console.log(href+external_coach_code);
+    window.open(href+external_coach_code);
+    return false;
+}

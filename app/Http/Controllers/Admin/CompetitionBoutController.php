@@ -17,6 +17,7 @@ use setasign\Fpdi\Fpdi;
 use App\Models\customBout;
 use App\Models\CompetitionPartModel;
 use App\PdfRotate;
+use PDF;
 
 class CompetitionBoutController extends Controller
 {
@@ -810,6 +811,7 @@ class CompetitionBoutController extends Controller
         $competition = CompetitionModel::where('COMP_ID',$decrypted_comp_id)->first();
 
         $result_data = null;
+        $coach_list = null;
 
         switch($view_type) {
             case('coach'):
@@ -877,6 +879,11 @@ class CompetitionBoutController extends Controller
                     ORDER BY total_gold desc,total_silver desc
                 ');
                 break;
+            case('download'):
+                $coach_list = DB::select('
+                    SELECT DISTINCT external_coach_code,external_coach_name FROM participants where competition_id='.$compModel->id.' 
+                ');
+                break;
 
             default:
                 $msg = 'Something went wrong.';
@@ -887,8 +894,49 @@ class CompetitionBoutController extends Controller
         ->with('details_key', $details_key)
         ->with('competition',$competition)
         ->with('result_data',$result_data)
+        ->with('coach_list',$coach_list)
         ;
 
     }
 
+    public function results_report_download_external_coach_code($decrypted_comp_id, $external_coach_code, Request $request)
+    {
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+     
+        // dd($compModel);
+        $coach = DB::select('
+            SELECT DISTINCT external_coach_code,external_coach_name FROM participants where external_coach_code='.$external_coach_code.' and competition_id='.$compModel->id.' 
+        ');
+
+        $participants = DB::select( "select * 
+            from 
+            (
+                SELECT C.bout_number,  C.gender, C.category, C.first, C.second, C.third_1, C.third_2, P.full_name, P.id, 
+                CASE WHEN P.id = C.first THEN 'Gold' WHEN P.id = C.second THEN 'Silver' WHEN P.id = C.third_1 THEN 'Bronze' WHEN P.id = C.third_2 THEN 'Bronze' ELSE ' - ' END as Result,
+                CASE WHEN P.id = C.first THEN 1 WHEN P.id = C.second THEN 2 WHEN P.id = C.third_1 THEN 3 WHEN P.id = C.third_2 THEN 4 ELSE 5 END as Result_seq 
+                FROM participants P
+                INNER JOIN bout_participant_details B on P.id = B.participant_id
+                INNER JOIN custom_bouts C on C.id = B.custom_bouts_id
+                where P.external_coach_code=".$external_coach_code." and P.competition_id=".$compModel->id."
+            ) as X
+            Order by X.gender, X.Result_seq
+            "
+        );
+
+        $pdf = PDF::loadView('admin/bout/download_result',array(
+            'decrypted_comp_id'=> $decrypted_comp_id,
+            'compModel' => $compModel,
+            'coach' => $coach[0],
+            'participants' => $participants,
+        ));
+        return $pdf->download('CompetitionResult_'.$external_coach_code.'.pdf');
+
+        return View('admin.bout.download_result',compact('decrypted_comp_id'))
+        ->with('compModel',$compModel)
+        ->with('coach', $coach[0])
+        ->with('participants',$participants)
+        // ->with('result_data',$result_data)
+        // ->with('coach_list',$coach_list)
+        ;
+    }
 }
