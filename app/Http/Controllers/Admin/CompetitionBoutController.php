@@ -549,7 +549,11 @@ class CompetitionBoutController extends Controller
                 }
             }
             $fpdi->Output($outputFilePath, 'F');
-            array_push($outputFileList,$outputFilePath);
+            $BoutPdf = new PdfRotate;
+            $outputFilePathNew = "competition/tmp/".$decrypted_comp_id."_". $rec->id."_new_1.pdf";
+            $BoutPdf->rotatePdfPage($outputFilePath, $outputFilePathNew, $BoutPdf::DEGREES_270,2);  
+
+            array_push($outputFileList,$outputFilePathNew);
         }
 
         // dd($outputFileList);
@@ -694,9 +698,9 @@ class CompetitionBoutController extends Controller
         list($fpdi, $outputFilePath) = $this->generate_bout($decrypted_comp_id, $bout_id, $custom_bout_id);
         $fpdi->Output( $outputFilePath, 'F');
 
-        $pdf = new PdfRotate;
+        $DownloadBoutPdf = new PdfRotate;
         $outputFilePathNew = "competition/tmp/".$decrypted_comp_id."_". $bout_id."_new.pdf";
-        $pdf->rotatePdfPage($outputFilePath, $outputFilePathNew, $pdf::DEGREES_270,2);
+        $DownloadBoutPdf->rotatePdfPage($outputFilePath, $outputFilePathNew, $DownloadBoutPdf::DEGREES_270,2);
 
         $headers = array(
             'Content-Type: application/pdf',
