@@ -255,7 +255,9 @@ class CompetitionController extends Controller
                 }            
                 // $compParticipant->team = 
 
-                $compParticipant->full_name = $karateKa->TITLE.' '.$karateKa->NAME.' '.$karateKa->M_NAME.' '.$karateKa->L_NAME;
+                // $compParticipant->full_name = $karateKa->TITLE.' '.$karateKa->NAME.' '.$karateKa->M_NAME.' '.$karateKa->L_NAME;
+                $compParticipant->full_name = $karateKa->NAME.' '.$karateKa->M_NAME.' '.$karateKa->L_NAME;
+                
                 if($karateKa->TITLE =="Mr") {
                     $compParticipant->gender = "Male";
                 } else {

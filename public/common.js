@@ -1,18 +1,18 @@
 
 function handleFailedResponse(form_id, response) {
-    $("#"+form_id+" .post_error").each(function () {
+    $("#" + form_id + " .post_error").each(function () {
         this.innerHTML = "";
     });
     if (response.responseJSON.errors) {
         $.each(response.responseJSON.errors, function (key, value) {
-            $("#"+form_id+" small[id=" + key + "_error]")
+            $("#" + form_id + " small[id=" + key + "_error]")
                 .html(value)
                 .css("color", "red");
         });
     }
 }
 
-function handleGetResponse(){
+function handleGetResponse() {
 
 }
 
@@ -23,15 +23,15 @@ function loadCommonFormData(that) {
         $("#editModal").html(data).trigger("create");
         $("#editModal").modal("show");
 
-        if($("#event_staff_id")) {
-          $("#event_staff_id").select2({ width: "resolve" });
+        if ($("#event_staff_id")) {
+            $("#event_staff_id").select2({ width: "resolve" });
         }
-        
+
         $("#editModalAccept").click(function () {
             submitCommonForm();
         });
     });
-  }
+}
 
 function submitCommonForm() {
     showProgress("add");
@@ -51,14 +51,14 @@ function submitCommonForm() {
 }
 
 
-  function loadCommonReport(that) {
+function loadCommonReport(that) {
     const href = $(that).data("href");
     $("#editModal").html("").trigger("create");
     $.get(href, function (data, status) {
         $("#editModal").html(data).trigger("create");
         $("#editModal").modal("show");
     });
-  }
+}
 
 
 
@@ -66,9 +66,9 @@ function onDeleteRecord(that, view_modal, callBack = null) {
     console.log("onDeleteRecord", $(that).data("href"));
     if (confirm('Sure? Deleted entry will not be recovered.')) {
         $.post($(that).data("href"), null, function (data, status) {
-            $("#"+view_modal).modal("hide");
+            $("#" + view_modal).modal("hide");
             alert(data.message);
-            if(callBack)
+            if (callBack)
                 callBack();
         }).fail(function (response) {
             alert('Some technical error.');
@@ -79,10 +79,10 @@ function onDeleteRecord(that, view_modal, callBack = null) {
 
 function onValidateRecord(that, view_modal) {
     console.log("onDeleteRecord", $(that).data("href"));
-    $("#"+view_modal).html("").trigger("create");
+    $("#" + view_modal).html("").trigger("create");
     $.get($(that).data("href"), function (data, status) {
-        $("#"+view_modal).html(data).trigger("create");
-        $("#"+view_modal).modal("show");
+        $("#" + view_modal).html(data).trigger("create");
+        $("#" + view_modal).modal("show");
     });
 }
 
@@ -92,59 +92,58 @@ function onValidateRecord(that, view_modal) {
 function loadDetails(that) {
     const href = $(that).data("href");
     const details_key = $(that).data("details_key");
-    $.get(href+"?details_key="+details_key, function (data, status) {
+    $.get(href + "?details_key=" + details_key, function (data, status) {
         $(getMyModelId(details_key)).html(data).trigger("create");
         $(getMyModelId(details_key)).modal("show");
-        
+
         $(getAcceptModelId(details_key)).click(function () {
-          $(getAcceptModelId(details_key)).prop('disabled', true);
-          submitData(details_key);
+            $(getAcceptModelId(details_key)).prop('disabled', true);
+            submitData(details_key);
         });
     });
-  };
-  
-  function getMyModelId(details_key) {
-    return "#"+details_key+"Modal";
-  }
-  
-  function getAcceptModelId(model_key) {
-    return "#"+model_key+"Accept";
-  }
-  
-  
-  function submitData(details_key) {
+};
+
+function getMyModelId(details_key) {
+    return "#" + details_key + "Modal";
+}
+
+function getAcceptModelId(model_key) {
+    return "#" + model_key + "Accept";
+}
+
+
+function submitData(details_key) {
     showProgress(details_key);
-    clearMessages("form_"+details_key);
-    if (details_key =="importExcel")
-    {
+    clearMessages("form_" + details_key);
+    if (details_key == "importExcel") {
         // var data = new FormData();
         // var data = $("#form_"+details_key)[0]; 
         // console.log(data);
         // data.append('file', files); 
-        var data = new FormData(); 
-        var files = $('#file')[0].files[0]; 
+        var data = new FormData();
+        var files = $('#file')[0].files[0];
         data.append('file', files);
 
-        $.ajax({ 
-            url: $(getAcceptModelId(details_key)).data("href"), 
-            type: 'post', 
-            data: data, 
-            contentType: false, 
-            processData: false, 
-            success: function(response){ 
-                if(response != 0){ 
+        $.ajax({
+            url: $(getAcceptModelId(details_key)).data("href"),
+            type: 'post',
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response != 0) {
                     // alert('file uploaded'); 
                     $(getMyModelId(details_key)).modal("hide");
-            
+
                     $("#form_submit_message_span").html(response.message);
                     $("#form_submit_message").modal("show");
                     clearProgress(details_key);
                     // location.reload(true)
                     loadReport();
-                } 
-                else{ 
-                    alert('file not uploaded'); 
-                    $("#form_"+details_key+" .post_error").each(function () {
+                }
+                else {
+                    alert('file not uploaded');
+                    $("#form_" + details_key + " .post_error").each(function () {
                         this.innerHTML = "";
                     });
                     console.log(response.responseJSON.errors);
@@ -157,23 +156,23 @@ function loadDetails(that) {
                         });
                     }
                     $(getAcceptModelId(details_key)).prop('disabled', false);
-                } 
-            }, 
+                }
+            },
         });
     }
     else {
-        var data = $("#form_"+details_key).serialize();
+        var data = $("#form_" + details_key).serialize();
         $.post($(getAcceptModelId(details_key)).data("href"), data, function (data, status) {
             $(getMyModelId(details_key)).modal("hide");
-            
+
             $("#form_submit_message_span").html(data.message);
             $("#form_submit_message").modal("show");
             clearProgress(details_key);
-            if($('#boutKey') == undefined) {
+            if ($('#boutKey') == undefined) {
                 loadReport();
             }
         }).fail(function (response) {
-            $("#form_"+details_key+" .post_error").each(function () {
+            $("#form_" + details_key + " .post_error").each(function () {
                 this.innerHTML = "";
             });
             console.log(response.responseJSON.errors);
@@ -188,22 +187,22 @@ function loadDetails(that) {
             $(getAcceptModelId(details_key)).prop('disabled', false);
         });
     }
-  }
+}
 
-  function loadContentDetails(that, details_key, clear_me) {
+function loadContentDetails(that, details_key, clear_me) {
     const href = $(that).data("href");
     const data_details_key = $(that).data("details_key");
-    $('li[name="li_'+details_key+'"]').removeClass("active");
+    $('li[name="li_' + details_key + '"]').removeClass("active");
     $(that).addClass("active");
-    
+
     $("#div_" + details_key).html(
         '<div class="progress"><div class="progress-bar progress-bar-indeterminate" role="progressbar"></div></div>'
     );
 
     $.get(href, function (data, status) {
-        $('#div_'+details_key).html(data).trigger("create");
-        $('#div_'+clear_me).html("").trigger("create");
-        if(data_details_key != undefined) {
+        $('#div_' + details_key).html(data).trigger("create");
+        $('#div_' + clear_me).html("").trigger("create");
+        if (data_details_key != undefined) {
             $(getAcceptModelId(data_details_key)).click(function () {
                 $(getAcceptModelId(data_details_key)).prop('disabled', true);
                 submitData(data_details_key);
@@ -211,7 +210,7 @@ function loadDetails(that) {
             });
         }
     });
-  };
+};
 
 //   function loadBoutDetailsFromSubmit() {
 //     if($('#boutKey')) {
@@ -228,9 +227,11 @@ function loadDetails(that) {
 //   }
 function downloadFile(that) {
     const external_coach_code = $('#external_coach_code').val();
-    console.log(external_coach_code);
+    // console.log(external_coach_code);
     const href = $(that).data("href");
-    console.log(href+external_coach_code);
-    window.open(href+external_coach_code);
+    // console.log(href);
+    const download_type = $('input[name="download_type"]:checked').val();
+    // console.log(href + external_coach_code + '/' + download_type);
+    window.open(href + external_coach_code + '/' + download_type);
     return false;
 }

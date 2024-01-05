@@ -97,7 +97,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/bout/results/index', 'results_index')->name('admin.board.bout.results');
             Route::get('/competition/board/{encrypted_comp_id}/bout/results/report', 'results_report')->name('admin.board.bout.results_report');
             Route::get('/competition/board/{encrypted_comp_id}/bout/results/report/{view_type}', 'results_report_view_type')->name('admin.board.bout.results_report.view_type');
-            Route::get('/competition/board/{encrypted_comp_id}/bout/results/report/download/{external_coach_code}', 'results_report_download_external_coach_code')->name('admin.board.bout.results_report.download.external_coach_code');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/results/report/download/{external_coach_code}/{download_type}', 'results_report_download_external_coach_code')->name('admin.board.bout.results_report.download.external_coach_code');
         });
 
         Route::controller(App\Http\Controllers\Admin\DefaultCategoryController::class)->group(function () {

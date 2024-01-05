@@ -479,7 +479,50 @@ return [
             ],
         ],
     ],
-    "start_date" => "2023/09/01"
+    'competition_certificate' => [
+        70 => [
+            'Male' => [109, 102],
+            'Female' => [101, 102],
+            'left' =>  [130, 100, 150, 200, 90],
+            'right' => [100, 108, 132, 132, 141],
+            'fields' => ['full_name', 'team', 'age_category', 'weight_category', 'rank_category'],
+            'text_1' => ['', '', ' Years', ' Kg', ''],
+            '1st' => [ 
+                [107, 134], 
+                [117, 134], 
+            ],
+            '2nd' => [ 
+                [97, 134], 
+                [117, 134],  
+            ],
+            '3rd' => [ 
+                [97, 134],  
+                [107, 134],  
+            ],
+            'no' => [ 
+                [97, 134],
+                [107, 134], 
+                [117, 134], 
+            ],
+        ],
+    ],
+    'competition_card' => [
+        70 => [
+            'competition_name_text_1' => 'GUJARAT STATE WADO KAI',
+            'competition_name_text_2' => 'KARATE CHAMPIONSHIP-2023',
+            'competition_date' => 'Date: 24-12-2023, Sunday',
+            'competition_vanue' => 'Yugpurush Vivekananda Sports Complex, Bakrol, ANAND',
+            'competition_name_left' => 18,
+            'competition_name_right' => 14,
+            'competition_image_left' => 8,
+            'competition_image_right' => 33,
+            'competition_part_name_left' => 38,
+            'competition_part_name_right' => 40,
+
+        ],
+    ],
+    "start_date" => "2023/09/01",
+    'avatar_url' => 'https://apiv2.wadokaikarate.in/show_files'
 ];
 // $dayOfTheWeek = Carbon::now()->dayOfWeek;
 // $weekday = $weekMap[$dayOfTheWeek];

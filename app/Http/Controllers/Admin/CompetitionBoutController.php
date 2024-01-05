@@ -14,8 +14,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Config;
 use setasign\Fpdi\Fpdi;
+// use setasign\Fpdi\PdfReader\PageBoundaries;
 use App\Models\customBout;
 use App\Models\CompetitionPartModel;
+use App\Models\FilesModel;
 use App\PdfRotate;
 use PDF;
 
@@ -886,6 +888,7 @@ class CompetitionBoutController extends Controller
             case('download'):
                 $coach_list = DB::select('
                     SELECT DISTINCT external_coach_code,external_coach_name FROM participants where competition_id='.$compModel->id.' 
+                    order by external_coach_name
                 ');
                 break;
 
@@ -903,13 +906,15 @@ class CompetitionBoutController extends Controller
 
     }
 
-    public function results_report_download_external_coach_code($decrypted_comp_id, $external_coach_code, Request $request)
+    public function results_report_download_external_coach_code($decrypted_comp_id, $external_coach_code, $download_type, Request $request)
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
      
         // dd($compModel);
         $coach = DB::select('
-            SELECT DISTINCT external_coach_code,external_coach_name FROM participants where external_coach_code='.$external_coach_code.' and competition_id='.$compModel->id.' 
+            SELECT DISTINCT external_coach_code,external_coach_name 
+            FROM participants 
+            where external_coach_code='.$external_coach_code.' and competition_id='.$compModel->id.'
         ');
 
         $participants = DB::select( "select * 
@@ -917,7 +922,9 @@ class CompetitionBoutController extends Controller
             (
                 SELECT C.bout_number,  C.gender, C.category, C.first, C.second, C.third_1, C.third_2, P.full_name, P.id, 
                 CASE WHEN P.id = C.first THEN 'Gold' WHEN P.id = C.second THEN 'Silver' WHEN P.id = C.third_1 THEN 'Bronze' WHEN P.id = C.third_2 THEN 'Bronze' ELSE ' - ' END as Result,
-                CASE WHEN P.id = C.first THEN 1 WHEN P.id = C.second THEN 2 WHEN P.id = C.third_1 THEN 3 WHEN P.id = C.third_2 THEN 4 ELSE 5 END as Result_seq 
+                CASE WHEN P.id = C.first THEN 1 WHEN P.id = C.second THEN 2 WHEN P.id = C.third_1 THEN 3 WHEN P.id = C.third_2 THEN 4 ELSE 5 END as Result_seq,
+                CASE WHEN P.id = C.first THEN '1st' WHEN P.id = C.second THEN '2nd' WHEN P.id = C.third_1 THEN '3rd' WHEN P.id = C.third_2 THEN '3rd' ELSE 'no' END as medal,
+                P.team, C.age_category, C.weight_category, C.rank_category, C.session, C.tatami, P.external_unique_id   
                 FROM participants P
                 INNER JOIN bout_participant_details B on P.id = B.participant_id
                 INNER JOIN custom_bouts C on C.id = B.custom_bouts_id
@@ -927,20 +934,258 @@ class CompetitionBoutController extends Controller
             "
         );
 
-        $pdf = PDF::loadView('admin/bout/download_result',array(
-            'decrypted_comp_id'=> $decrypted_comp_id,
-            'compModel' => $compModel,
-            'coach' => $coach[0],
-            'participants' => $participants,
-        ));
-        return $pdf->download('CompetitionResult_'.$external_coach_code.'.pdf');
+        if($download_type == "result") {
+            $pdf = PDF::loadView('admin/bout/download_result',array(
+                'decrypted_comp_id'=> $decrypted_comp_id,
+                'compModel' => $compModel,
+                'coach' => $coach[0],
+                'participants' => $participants,
+            ));
+            return $pdf->download('CompetitionResult_'.$external_coach_code.'.pdf');
+        } else if($download_type == "cards") {
+            $this->generate_cards_for_coach($compModel, $coach[0], $participants);
+            // return $pdf->download('CompetitionCards_'.$external_coach_code.'.pdf');
+        } else if($download_type == "certificate") {
+            $this->generate_certificate_for_coach($compModel, $coach[0], $participants);
+            // return $pdf->download('CompetitionCertificate_'.$external_coach_code.'.pdf');
+        }
+        
 
-        return View('admin.bout.download_result',compact('decrypted_comp_id'))
-        ->with('compModel',$compModel)
-        ->with('coach', $coach[0])
-        ->with('participants',$participants)
-        // ->with('result_data',$result_data)
-        // ->with('coach_list',$coach_list)
-        ;
+        // return View('admin.bout.download_result',compact('decrypted_comp_id'))
+        // ->with('compModel',$compModel)
+        // ->with('coach', $coach[0])
+        // ->with('participants',$participants)
+        // // ->with('result_data',$result_data)
+        // // ->with('coach_list',$coach_list)
+        // ;
+    }
+
+    public function generate_certificate_for_coach($compModel, $coach, $participants) {
+
+        $outputFileList=array();
+        foreach($participants as $key=>$participant) {
+            list($fpdi, $outputFilePath) = $this->generate_certificate($compModel, $coach,$participant);
+            $fpdi->Output($outputFilePath, 'F');
+            array_push($outputFileList,$outputFilePath);
+        }
+
+        $pdf = new FPDI();
+
+        // iterate through the files
+        foreach ($outputFileList AS $file) {
+            // get the page count
+            $pageCount = $pdf->setSourceFile($file);
+            // iterate through all pages
+            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                // import a page
+                $templateId = $pdf->importPage($pageNo);
+                // get the size of the imported page
+                $size = $pdf->getTemplateSize($templateId);
+                $pdf->AddPage($size['orientation'], array($size['width'], $size['height']));
+                // use the imported page
+                $pdf->useTemplate($templateId);
+            }
+        }
+        $pdf->Output('D', $compModel->id."_". $coach->external_coach_name. ".pdf", 'F');
+    }
+
+    public function generate_certificate($compModel, $coach, $participant ) {
+        $certificate_left_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.left');
+        $certificate_right_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.right');
+        $certificate_fields_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.fields');
+        $certificate_text_1_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.text_1');
+
+        $certificate_medal_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.'.$participant->medal);
+
+        $certificate_gender_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.'.$participant->gender);
+
+        $fpdi = new FPDI;
+        
+        $filePath = "competition/template/certificates/".$compModel->comp_id.".pdf";
+        $outputFilePath = "competition/tmp/".$compModel->id."_". $coach->external_coach_code. "_". $participant->id. ".pdf";
+        
+        $count = $fpdi->setSourceFileWithParserParams($filePath);
+  
+        for ($i=1; $i<=$count; $i++) {
+  
+            $template = $fpdi->importPage($i);
+            $size = $fpdi->getTemplateSize($template);
+            $fpdi->AddPage($size['orientation'], array($size['width'], $size['height']));
+            $fpdi->useTemplate($template);
+              
+            $fpdi->SetFont("arial", "b", 13);
+              
+            foreach($certificate_left_conf as $key=>$left) {
+                
+                $player_name_left = $left;
+                $player_name_right = $certificate_right_conf[$key]; 
+                $fpdi->Text($player_name_left,$player_name_right, $participant->{$certificate_fields_conf[$key]}.$certificate_text_1_conf[$key]);
+                
+            }
+            $fpdi->SetFont("arial", "b", 18);
+            foreach($certificate_medal_conf as $key=>$val) {
+                $fpdi->Text($val[0],$val[1], 'X');
+            }
+            $fpdi->Text($certificate_gender_conf[0],$certificate_gender_conf[1], 'X');            
+        }
+        return array( $fpdi, $outputFilePath);
+    }
+
+    public function generate_cards_for_coach($compModel, $coach, $participants) {
+        
+        $participants_count = count($participants);
+        $participants_array_chunk = array_chunk($participants,14);
+
+        $outputFileList=array();
+        foreach($participants_array_chunk as $key=>$participant) {
+            list($fpdi, $outputFilePath) = $this->generate_cards($compModel, $coach,$participant, $key+1);
+            $fpdi->Output($outputFilePath, 'F');
+            array_push($outputFileList,$outputFilePath);
+        }
+        // dd($outputFileList);
+        $pdf = new FPDI();
+
+        // iterate through the files
+        foreach ($outputFileList AS $file) {
+            // get the page count
+            $pageCount = $pdf->setSourceFile($file);
+            // iterate through all pages
+            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                // import a page
+                $templateId = $pdf->importPage($pageNo);
+                // get the size of the imported page
+                $size = $pdf->getTemplateSize($templateId);
+                $pdf->AddPage($size['orientation'], array($size['width'], $size['height']));
+                // use the imported page
+                $pdf->useTemplate($templateId);
+            }
+        }
+        $pdf->Output('D', "cards_".$compModel->id."_". $coach->external_coach_name. ".pdf", 'F');
+    }
+    public function generate_cards($compModel, $coach, $participants, $page_no) {
+
+        $fpdi = new FPDI;
+        
+        $filePath = "competition/template/cards/card.pdf";
+        $blueImage = "competition/template/cards/blue.png";
+        $redImage = "competition/template/cards/red.png";
+        
+        $count = $fpdi->setSourceFileWithParserParams($filePath);
+        // $count = 1;
+        
+        $outputFileList=array();
+        
+        $outputFilePath = "competition/tmp/".$compModel->id."_". $coach->external_coach_code. "_". $page_no. ".pdf";
+        
+        $certificate_text_1_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.text_1');
+
+        $competition_name_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_left');
+        $competition_name_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_right');
+
+        $competition_image_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_image_left');
+        $competition_image_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_image_right');
+
+        $competition_part_name_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_part_name_left');
+        $competition_part_name_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_part_name_right');
+        $competition_name_text_1 = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_text_1');
+        $competition_name_text_2 = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_text_2');
+
+        $competition_date = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_date');
+        $competition_vanue = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_vanue');
+        
+        for ($i=1; $i<=$count; $i++) {
+  
+            $template = $fpdi->importPage($i);
+            $size = $fpdi->getTemplateSize($template);
+            
+            $fpdi->AddPage($size['orientation'], array($size['width'], $size['height']));
+            
+            $fpdi->useTemplate($template);
+
+            $fpdi->AddFont('ariblk', '', 'ariblk.php');
+            
+            $fpdi->SetFont("arial", "b", 13);
+
+            foreach($participants as $key=>$participant) {
+
+                $diff = fmod($key,2) == 0 ? 0 : 150;
+                $sequence = floor($key/2);
+                // Display Card
+                if ($participant->session == "MORNING") {
+                    $fpdi->Image($blueImage ,$diff + 5 ,($sequence * 65) + 5, 120, 60, "PNG");
+                } else {
+                    $fpdi->Image($redImage ,$diff + 5 ,($sequence * 65) + 5, 120, 60, "PNG");
+                }
+
+                // Display Image
+                $fpdi->Rect($competition_image_left + $diff, ($sequence * 65) + $competition_image_right, 27, 27);
+                $fpdi->Image($this->get_image_url($participant->external_unique_id) ,$competition_image_left + $diff + 1, ($sequence * 65) + $competition_image_right + 1, 25, 25);
+                
+                $fpdi->SetTextColor(255,255,255);
+                $fpdi->SetFont("ariblk", "", 18);
+                
+                $fpdi->Text($competition_name_left + $diff, ($sequence * 65) + $competition_name_right, $competition_name_text_1, 'C');
+                $fpdi->Text($competition_name_left + $diff - 5, ($sequence * 65) + $competition_name_right + 7, $competition_name_text_2, 'C');
+
+                $fpdi->SetFont("arial", "b", 10);
+                
+                $fpdi->Text($competition_name_left + 30 + $diff, ($sequence * 65) + $competition_name_right + 12, $competition_date, 'C');
+
+                $fpdi->SetTextColor(0,0,0);
+                $fpdi->SetFont("arial", "b", 10);
+                $fpdi->Text($competition_name_left + $diff , ($sequence * 65) + $competition_name_right + 17, $competition_vanue, 'C');
+
+                $fpdi->SetFont("arial", "b", 11);
+                $fpdi->Text($competition_part_name_left + $diff, ($sequence * 65) + $competition_part_name_right, 'Name:', 'c');
+                
+                $fpdi->SetFont("arial", "bu", 11);
+                $fpdi->Text($competition_part_name_left + $diff + 20, ($sequence * 65) + $competition_part_name_right, $participant->full_name, 'c');
+
+                $fpdi->SetFont("arial", "b", 11);
+                $fpdi->Text($competition_part_name_left + $diff , ($sequence * 65) + $competition_part_name_right + 6, 'Bout No:', 'c');
+                $fpdi->SetFont("arial", "bu", 11);
+                $fpdi->Text($competition_part_name_left + $diff + 20 , ($sequence * 65) + $competition_part_name_right + 6, $participant->bout_number, 'c');
+
+                $fpdi->SetFont("arial", "b", 11);
+                $fpdi->Text($competition_part_name_left + 50 + $diff, ($sequence * 65) + $competition_part_name_right + 6, 'Tatami No:', 'c');
+                $fpdi->SetFont("arial", "bu", 11);
+                $fpdi->Text($competition_part_name_left + 70 + $diff, ($sequence * 65) + $competition_part_name_right + 6,$participant->tatami, 'c');
+                
+                // $fpdi->SetFont("arial", "b", 13);
+                if ($participant->session == "MORNING") {
+                    $fpdi->Text($competition_part_name_left + $diff + 10, ($sequence * 65) + $competition_part_name_right + 20, 'Morning Session (Before Lunch)', 'c');
+                } else {
+                    $fpdi->Text($competition_part_name_left + $diff + 10, ($sequence * 65) + $competition_part_name_right + 20, 'Afternoon Session (Post Lunch)', 'c');
+                }
+            }           
+        }
+        return array( $fpdi, $outputFilePath);
+        // $fpdi->Output('D', "cards_".$compModel->id."_". $coach->external_coach_name. ".pdf", 'F');
+    }
+    
+    function get_image_url($part_comp_id) {
+        $fileSql = "
+            SELECT F.name 
+            FROM PART_COMPETITION PC
+            INNER JOIN files F on F.k_id = PC.KARATE_KA_ID
+            WHERE PC.PART_COMP_ID = $part_comp_id
+        ";
+        $dataObj = collect(DB::connection('rksys_app')->select($fileSql))->first();
+
+        if ($dataObj) {
+            $response_code = $this->get_http_response_code(Config::get('constants.avatar_url').'/'.$dataObj->name);
+            if($response_code == "200") {
+                return Config::get('constants.avatar_url').'/'.$dataObj->name;
+            } else {
+                return 'competition/logo.png';
+            }
+        } else {
+            return 'competition/logo.png';
+        }
+    }
+
+    function get_http_response_code($url) {
+        $headers = get_headers($url);
+        return substr($headers[0], 9, 3);
     }
 }
