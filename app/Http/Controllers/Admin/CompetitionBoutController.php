@@ -1079,6 +1079,9 @@ class CompetitionBoutController extends Controller
         
         $certificate_text_1_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.text_1');
 
+        $competition_logo_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_logo_left');
+        $competition_logo_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_logo_right');
+        
         $competition_name_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_left');
         $competition_name_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_right');
 
@@ -1121,19 +1124,21 @@ class CompetitionBoutController extends Controller
                 $fpdi->Rect($competition_image_left + $diff, ($sequence * 65) + $competition_image_right, 27, 27);
                 $fpdi->Image($this->get_image_url($participant->external_unique_id) ,$competition_image_left + $diff + 1, ($sequence * 65) + $competition_image_right + 1, 25, 25);
                 
+                $fpdi->Image('competition/logo.png' , $competition_logo_left + $diff , ($sequence * 65) + $competition_logo_right, 18, 18, "PNG");
+                
                 $fpdi->SetTextColor(255,255,255);
-                $fpdi->SetFont("ariblk", "", 18);
+                $fpdi->SetFont("ariblk", "", 14);
                 
                 $fpdi->Text($competition_name_left + $diff, ($sequence * 65) + $competition_name_right, $competition_name_text_1, 'C');
                 $fpdi->Text($competition_name_left + $diff - 5, ($sequence * 65) + $competition_name_right + 7, $competition_name_text_2, 'C');
 
                 $fpdi->SetFont("arial", "b", 10);
                 
-                $fpdi->Text($competition_name_left + 30 + $diff, ($sequence * 65) + $competition_name_right + 12, $competition_date, 'C');
+                $fpdi->Text($competition_name_left + 15 + $diff, ($sequence * 65) + $competition_name_right + 12, $competition_date, 'C');
 
                 $fpdi->SetTextColor(0,0,0);
                 $fpdi->SetFont("arial", "b", 10);
-                $fpdi->Text($competition_name_left + $diff , ($sequence * 65) + $competition_name_right + 17, $competition_vanue, 'C');
+                $fpdi->Text($competition_name_left + $diff - 15, ($sequence * 65) + $competition_name_right + 17, $competition_vanue, 'C');
 
                 $fpdi->SetFont("arial", "b", 11);
                 $fpdi->Text($competition_part_name_left + $diff, ($sequence * 65) + $competition_part_name_right, 'Name:', 'c');
@@ -1177,10 +1182,10 @@ class CompetitionBoutController extends Controller
             if($response_code == "200") {
                 return Config::get('constants.avatar_url').'/'.$dataObj->name;
             } else {
-                return 'competition/logo.png';
+                return 'competition/NoImageFound.png';
             }
         } else {
-            return 'competition/logo.png';
+            return 'competition/NoImageFound.png';
         }
     }
 
