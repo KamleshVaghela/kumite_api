@@ -32,6 +32,37 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/school_master/create', 'create')->name('admin.school_master.create');
             Route::post('/school_master/store', 'store')->name('admin.school_master.store');
         });
+        Route::controller(App\Http\Controllers\Admin\ExternalBoutGenerationController::class)->group(function () {
+            Route::get('/external_bout', 'index')->name('admin.external_bout');
+            Route::post('/external_bout/report', 'report')->name('admin.external_bout.report');
+            Route::get('/external_bout/create', 'create')->name('admin.external_bout.create');
+            Route::post('/external_bout/store', 'store')->name('admin.external_bout.store');
+            Route::get('/external_bout/board/{external_comp_id}', 'boardIndex')->name('admin.external_bout.board');
+            Route::post('/external_bout/board/{external_comp_id}/report', 'boardReport')->name('admin.external_bout.board.report');
+
+            Route::get('/external_bout/board/{external_comp_id}/export_excel', 'exportExcel')->name('admin.external_bout.board.export_excel');
+            Route::get('/external_bout/board/{external_comp_id}/import_excel', 'importExcel')->name('admin.external_bout.board.import_excel');
+            Route::post('/external_bout/board/{external_comp_id}/post_import_excel', 'postImportExcel')->name('admin.external_bout.board.post_import_excel');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/data_table', 'data_table')->name('admin.external_bout.board.bout.data_table');
+            Route::post('/external_bout/board/{external_comp_id}/bout/data_table/report', 'data_table_report')->name('admin.external_bout.board.bout.data_table.report');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/index', 'board_list_index')->name('admin.external_bout.board.bout.list');
+            Route::post('/external_bout/board/{external_comp_id}/bout/list/report', 'board_list_report')->name('admin.external_bout.board.bout.list.report');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/{bout_id}/participants', 'board_list_index_participants')
+            ->name('admin.external_bout.board.bout.list.participants');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/{bout_id}/karate_ka/{participant_id}', 'board_list_index_karate_ka')
+            ->name('admin.external_bout.board.bout.list.karate_ka');
+
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/download_all_bout', 'board_list_download_all_bout')
+            ->name('admin.external_bout.board.bout.download_all_bout');
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/{bout_id}/download_bout', 'board_list_download_bout')
+            ->name('admin.external_bout.board.bout.download_bout');
+
+        });
 
         Route::controller(App\Http\Controllers\Admin\CompetitionController::class)->group(function () {
             Route::get('/competition', 'index')->name('admin.competition');

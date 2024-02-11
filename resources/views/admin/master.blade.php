@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta content="initial-scale=1, shrink-to-fit=no, width=device-width" name="viewport">
@@ -8,7 +9,9 @@
 
     <!-- CSS -->
     <!-- Add Material font (Roboto) and Material icon as needed -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i|Roboto+Mono:300,400,700|Roboto+Slab:300,400,700"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Outlined" rel="stylesheet" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Material+Icons+Round" rel="stylesheet" crossorigin>
@@ -28,28 +31,31 @@
     <link href="{{ asset('static/bootstrap4-toggle/dist/css/bootstrap4-toggle.min.css') }}" rel="stylesheet">
     {{-- <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet"> --}}
     @php
-        $route =  Route::current()->getName();
+    $route = Route::current()->getName();
     @endphp
     @if($route == 'admin.board.bout.data_table')
-        {{-- <link href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/r-2.2.6/rr-1.2.7/sl-1.3.1/datatables.css" rel="stylesheet" crossorigin>
+    {{-- <link href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/r-2.2.6/rr-1.2.7/sl-1.3.1/datatables.css" rel="stylesheet" crossorigin>
         <link href="https://cdn.jsdelivr.net/gh/djibe/material@4.6.2-1.0/css/material-plugins.min.css" rel="stylesheet" crossorigin> --}}
-        <link href="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.css" rel="stylesheet">
     @endif
     <style>
-        #content {
-          height: 90vh;
-        }
-        #report_list {
-            max-height: 85vh;
-            overflow-x: scroll;
-            display: flex;
-        }
-        #form_edit_activity .select2-search__field {
-            width: 27.75em !important;
-        }
+    #content {
+        height: 90vh;
+    }
+
+    #report_list {
+        max-height: 85vh;
+        overflow-x: scroll;
+        display: flex;
+    }
+
+    #form_edit_activity .select2-search__field {
+        width: 27.75em !important;
+    }
     </style>
-  </head>
-  <body>
+</head>
+
+<body>
     @include('admin.body.header')
     @include('admin.body.sidebar')
 
@@ -61,7 +67,8 @@
 
 
     <!-- Optional JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
@@ -70,7 +77,9 @@
     <!-- Then Material JavaScript on top of Bootstrap JavaScript -->
     <script src="{{ asset('static/material2/js/material.min.js') }}"></script>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js"> </script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.min.js">
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.js"></script>
@@ -86,35 +95,46 @@
     <script src="{{ asset('ajaxsetup.js') }}"></script>
     <script src="{{ asset('common.js?d='.time()) }}"></script>
 
-    
+
     @if($route == 'admin.competition')
-        <script src="{{ asset('admin/competition.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/competition.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board.bout')
-        <script src="{{ asset('admin/bout.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/bout.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board')
-        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board.bout')
-        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board.bout.results')
-        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.default_category')
-        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.school_master')
-        <script src="{{ asset('admin/school_master.js?d='.time()) }}"></script>
+    <script src="{{ asset('admin/school_master.js?d='.time()) }}"></script>
+    @endif
+    @if($route == 'admin.external_bout' || $route == 'admin.external_bout.board' || $route ==
+    'admin.external_bout.board.bout.list')
+    <script src="{{ asset('admin/external_bout.js?d='.time()) }}"></script>
     @endif
 
     @if($route == 'admin.board.bout.data_table')
-        {{-- <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.1.68/build/pdfmake.min.js" integrity="sha256-Xf58sgO5ClVXPyDzPH+NtjN52HMC0YXBJ3rp8sWnyUk=" crossorigin></script>
-        <script src="https://cdn.jsdelivr.net/npm/pdfmake@0.1.68/build/vfs_fonts.js" integrity="sha256-vEmrkqA2KrdjNo0/IWMNelI6jHuWAOkIJxGf88r4iic=" crossorigin></script>
-        <script src="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-colvis-1.6.5/b-flash-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/r-2.2.6/rr-1.2.7/sl-1.3.1/datatables.min.js" crossorigin></script> --}}
-        <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
-        <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
+    <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
+
+    @if($route == 'admin.external_bout.board.bout.data_table')
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
+    <script src="{{ asset('admin/external_bout.js?d='.time()) }}"></script>
+    @endif
+
+
+
+
 </body>
+
 </html>
