@@ -246,7 +246,11 @@ class CompetitionController extends Controller
                 } else if ($competition->TYPE == "D") {
                     //District
                     $compParticipant->team = "$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
-                } else if ($competition->TYPE == "S") {
+                } else if ($competition->TYPE == "ID") {
+                    //District
+                    $compParticipant->team = "$karateKa->DOJO_NAME $karateKa->SCHOOL_NAME ($karateKa->COACH_NAME)";
+                } 
+                else if ($competition->TYPE == "S") {
                     //State
                     $compParticipant->team = "$karateKa->DISTRICT";
                 } else if ($competition->TYPE == "N") {
@@ -276,11 +280,12 @@ class CompetitionController extends Controller
                     $compParticipant->no_of_year = $karateKa->NoOfYear;
                 }
                 $compParticipant->age = $competition_part->AGE;
-                if(fmod($competition_part->WEIGHT, 1) > 0.3) {
-                    $compParticipant->weight = $competition_part->WEIGHT;
-                } else {
-                    $compParticipant->weight = $competition_part->WEIGHT + 1;
-                }
+                $compParticipant->weight = $competition_part->WEIGHT;
+                // if(fmod($competition_part->WEIGHT, 1) > 0.3) {
+                //     $compParticipant->weight = $competition_part->WEIGHT;
+                // } else {
+                //     $compParticipant->weight = $competition_part->WEIGHT + 1;
+                // }
 
                 $compParticipant->user_id = Auth::user()->id;
                 $compParticipant->last_modified = \Carbon\Carbon::now();
