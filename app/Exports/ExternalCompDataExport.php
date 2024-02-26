@@ -22,11 +22,26 @@ class ExternalCompDataExport implements FromCollection, WithHeadings
 
     public function collection()
     {
+        // Normal Excel File Header Columns
+        // Unique No, Gender, Bout No, Category, Tatami, Session, Name, Weight, Rank, Age, Coach, Team, No of Participants, No of Years
+
         $participants = DB::table('external_participants')
         ->where('external_participants.external_competition_id', $this->external_comp_id)
-        ->select( 'full_name', 'gender', 'team', 'coach_name', 'rank', 'age', 'weight',
-            DB::raw(' "TBD" as category'), DB::raw(' "" as age_category'), DB::raw(' "" as weight_category'),
-            DB::raw(' "" as rank_category'), DB::raw(' "0" as tatami'), DB::raw(' "TBD" as session'), DB::raw(' "0" as bout_number'),
+        ->select( 
+            'gender',
+            DB::raw(' "0" as bout_number'), 
+            DB::raw(' "TBD" as category'), 
+            DB::raw(' "" as age_category'), 
+            DB::raw(' "" as weight_category'),
+            DB::raw(' "" as rank_category'),  
+            DB::raw(' "0" as tatami'), 
+            DB::raw(' "TBD" as session'),
+            'full_name', 
+            'weight',
+            'rank', 
+            'age', 
+            'coach_name',
+            'team', 
         )
         ->orderBy('gender')
         ->orderBy('age')
@@ -37,7 +52,10 @@ class ExternalCompDataExport implements FromCollection, WithHeadings
     }
     public function headings(): array
     {
-        return ['Name', 'Gender',  'Team', 'Coach', 'Rank', 'Age', 'Weight',  'Category', 'Age Category', 'Weight Category','Rank Category', 'Tatami', 'Session', 'Bout Number', ];
+        // External Excel File Header Columns
+        return [ 'Gender', 'Bout Number',  'Category', 'Age Category', 'Weight Category','Rank Category',
+            'Tatami', 'Session', 'Name',  'Weight',  'Rank', 'Age', 'Coach','Team', 
+        ];
     }
 
     // public function registerEvents(): array
