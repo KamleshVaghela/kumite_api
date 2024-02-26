@@ -239,16 +239,16 @@ class CompetitionController extends Controller
                 
                 if ($competition->TYPE == "ISC") {
                     //Inter School
-                    $compParticipant->team = "$karateKa->SCHOOL_NAME ($karateKa->SM_ID)";
+                    $compParticipant->team = "$karateKa->SCHOOL_NAME";
                 } else if ($competition->TYPE == "IDJ") {
                     //Inter Dojo
-                    $compParticipant->team = "$karateKa->DOJO_NAME ($karateKa->DOJO_ID)";
+                    $compParticipant->team = "$karateKa->DOJO_NAME";
                 } else if ($competition->TYPE == "D") {
                     //District
                     $compParticipant->team = "$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
                 } else if ($competition->TYPE == "ID") {
                     //District
-                    $compParticipant->team = "$karateKa->DOJO_NAME $karateKa->SCHOOL_NAME ($karateKa->COACH_NAME)";
+                    $compParticipant->team = "$karateKa->DISTRICT | $karateKa->DOJO_NAME $karateKa->SCHOOL_NAME";
                 } 
                 else if ($competition->TYPE == "S") {
                     //State

@@ -774,6 +774,7 @@ class CompetitionBoutController extends Controller
         $fpdi->SetFont($font, $style, $fontsize-4);
         $fpdi->Text($left_2,$top - 2,ucwords(strtolower($player_data->external_coach_name)));
         $fpdi->Text($left_2,$top + 2,ucwords(strtolower($player_data->team)));
+        // $fpdi->Text($left_2 - 15,$top + 1,ucwords(strtolower($player_data->team)));
         // $this->print_text($fpdi, $left_1, $top, strtoupper($player_data["full_name"]), 15);
         // $this->print_text($fpdi, $left_2, $top, strtoupper($player_data["external_coach_name"]), 15);
         // strtoupper
@@ -924,13 +925,14 @@ class CompetitionBoutController extends Controller
                 CASE WHEN P.id = C.first THEN 'Gold' WHEN P.id = C.second THEN 'Silver' WHEN P.id = C.third_1 THEN 'Bronze' WHEN P.id = C.third_2 THEN 'Bronze' ELSE ' - ' END as Result,
                 CASE WHEN P.id = C.first THEN 1 WHEN P.id = C.second THEN 2 WHEN P.id = C.third_1 THEN 3 WHEN P.id = C.third_2 THEN 4 ELSE 5 END as Result_seq,
                 CASE WHEN P.id = C.first THEN '1st' WHEN P.id = C.second THEN '2nd' WHEN P.id = C.third_1 THEN '3rd' WHEN P.id = C.third_2 THEN '3rd' ELSE 'no' END as medal,
-                P.team, C.age_category, C.weight_category, C.rank_category, C.session, C.tatami, P.external_unique_id   
+                P.team, C.age_category, C.weight_category, C.rank_category, C.session, C.tatami, P.external_unique_id,
+                P.age, P.weight    
                 FROM participants P
                 INNER JOIN bout_participant_details B on P.id = B.participant_id
                 INNER JOIN custom_bouts C on C.id = B.custom_bouts_id
                 where P.external_coach_code=".$external_coach_code." and P.competition_id=".$compModel->id."
             ) as X
-            Order by X.gender, X.Result_seq
+            Order by X.session, X.team, X.gender, X.bout_number,  X.Result_seq
             "
         );
 
@@ -940,7 +942,7 @@ class CompetitionBoutController extends Controller
                 'compModel' => $compModel,
                 'coach' => $coach[0],
                 'participants' => $participants,
-            ));
+            ))->setPaper('a4', 'landscape');
             return $pdf->download('CompetitionResult_'.$external_coach_code.'.pdf');
         } else if($download_type == "cards") {
             $this->generate_cards_for_coach($compModel, $coach[0], $participants);

@@ -124,15 +124,29 @@ table {
                 <th class="w-10">Sr.No</th>
                 <th class="w-30">Name</th>
                 <th class="w-10">Bout No</th>
+                <th class="w-10">Tatami</th>
+                <th class="w-10">Session</th>
                 <th class="w-40">Category</th>
+                <th class="w-40">Team</th>
+                <th class="w-10">Age</th>
+                <th class="w-10">Weight</th>
                 <th class="w-10">Results</th>
             </tr>
             @forelse($participants as $key=>$rec)
-            <tr align="center">
+            <tr align="center" style="
+                @if(strtolower($rec->session) == 'noon')
+                background: #EAC4BC;
+                @endif
+            ">
                 <td>{{ $key+1 }}</td>
                 <td>{{ $rec->full_name }}</td>
                 <td>{{ $rec->bout_number }}</td>
+                <td>{{ $rec->tatami }}</td>
+                <td>{{ $rec->session }}</td>
                 <td>{{ $rec->category }}</td>
+                <td>{{ $rec->team }}</td>
+                <td>{{ $rec->age }}</td>
+                <td>{{ $rec->weight }}</td>
                 <td>{{ $rec->Result }}</td>
             </tr>
             @empty
