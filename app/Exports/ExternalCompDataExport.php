@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 
-class ExternalCompDataExport implements FromCollection, WithHeadings
-// , WithEvents 
+class ExternalCompDataExport implements FromCollection, WithHeadings, WithEvents 
 {
     protected $external_comp_id;
     protected $data;
@@ -55,6 +54,16 @@ class ExternalCompDataExport implements FromCollection, WithHeadings
         // External Excel File Header Columns
         return [ 'Gender', 'Bout Number',  'Category', 'Age Category', 'Weight Category','Rank Category',
             'Tatami', 'Session', 'Name',  'Weight',  'Rank', 'Age', 'Coach','Team', 
+        ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function(AfterSheet $event) {
+                $workSheet = $event->sheet->getDelegate();
+                $workSheet->freezePane('A2'); // freezing here
+            },
         ];
     }
 

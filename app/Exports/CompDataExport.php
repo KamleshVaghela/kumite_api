@@ -47,6 +47,11 @@ class CompDataExport implements FromCollection, WithHeadings, WithEvents
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
+                
+                $workSheet = $event->sheet->getDelegate();
+                $workSheet->freezePane('A2'); // freezing here
+
+
                 // Get the total number of rows
                 $totalRows = $this->data->count();
     
