@@ -49,6 +49,7 @@ class CompDataExport implements FromCollection, WithHeadings, WithEvents
             AfterSheet::class => function(AfterSheet $event) {
                 
                 $workSheet = $event->sheet->getDelegate();
+                $workSheet->insertNewRowBefore(2,1); // Add Empty Row
                 $workSheet->freezePane('A2'); // freezing here
 
 
