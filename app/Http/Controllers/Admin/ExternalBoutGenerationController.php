@@ -133,8 +133,8 @@ class ExternalBoutGenerationController extends Controller
                       $request->file('file')->store('files'));
 
         $excelRecords = ExternalBoutTempExcel::where('external_competition_id',$external_comp_id)
-        ->orderBy('gender')
-        ->orderBy('category')
+        ->orderBy('id')
+        // ->orderBy('category')
         ->get();
 
         $participant_cnt = 1;
@@ -243,12 +243,13 @@ class ExternalBoutGenerationController extends Controller
         ->join("external_bouts", function($join) {
             $join->on("external_bouts.id", "=", "external_participants.bout_id");
         })
-        ->select("external_bouts.id", "external_bouts.category", "external_bouts.gender",
+        ->select("external_bouts.id", "external_bouts.category", "external_bouts.gender" ,"external_bouts.bout_number",
             DB::raw('count(*) as participant_count') 
         )
         ->groupBy('external_bouts.id')
         ->groupBy('external_bouts.category')
         ->groupBy('external_bouts.gender')
+        ->groupBy('external_bouts.bout_number')
         ->orderBy('external_bouts.id')
         ->get();
         

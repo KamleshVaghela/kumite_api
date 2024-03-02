@@ -31,7 +31,7 @@
                                         onclick="loadContentDetails(this, 'participants', 'karate_ka')"
                                         data-href="{{URL::to('admin/external_bout/board/'.$external_comp_id.'/bout/list/'.$rec->id.'/participants')}}"
                                         name="li_participants" id="li_participants_{{$external_comp_id}}_{{$rec->id}}">
-                                        {{$rec->category}}
+                                        {{$rec->bout_number}}-{{$rec->category}}
                                         <span class="badge badge-primary badge-pill">{{$rec->participant_count}}</span>
                                     </li>
                                 </div>
