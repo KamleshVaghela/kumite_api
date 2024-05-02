@@ -10,45 +10,48 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 
-class ExternalCompDataExport implements FromCollection, WithHeadings, WithEvents 
+class ExternalCompDataExport implements 
+// FromCollection, 
+WithHeadings, WithEvents 
 {
     protected $external_comp_id;
-    protected $data;
+    // protected $data;
 
     function __construct($external_comp_id) {
             $this->external_comp_id = $external_comp_id;
     }
 
-    public function collection()
-    {
+    // public function collection()
+    // {
         // Normal Excel File Header Columns
         // Unique No, Gender, Bout No, Category, Tatami, Session, Name, Weight, Rank, Age, Coach, Team, No of Participants, No of Years
 
-        $participants = DB::table('external_participants')
-        ->where('external_participants.external_competition_id', $this->external_comp_id)
-        ->select( 
-            'gender',
-            DB::raw(' "0" as bout_number'), 
-            DB::raw(' "TBD" as category'), 
-            DB::raw(' "" as age_category'), 
-            DB::raw(' "" as weight_category'),
-            DB::raw(' "" as rank_category'),  
-            DB::raw(' "0" as tatami'), 
-            DB::raw(' "TBD" as session'),
-            'full_name', 
-            'weight',
-            'rank', 
-            'age', 
-            'coach_name',
-            'team', 
-        )
-        ->orderBy('gender')
-        ->orderBy('age')
-        ->orderBy('weight')
-        ->get();
-        $this->data = $participants;
-        return $participants;
-    }
+        // $participants = DB::table('external_participants')
+        // ->where('external_participants.external_competition_id', $this->external_comp_id)
+        // ->select( 
+        //     'gender',
+        //     DB::raw(' "0" as bout_number'), 
+        //     DB::raw(' "TBD" as category'), 
+        //     DB::raw(' "" as age_category'), 
+        //     DB::raw(' "" as weight_category'),
+        //     DB::raw(' "" as rank_category'),  
+        //     DB::raw(' "0" as tatami'), 
+        //     DB::raw(' "TBD" as session'),
+        //     'full_name', 
+        //     'weight',
+        //     'rank', 
+        //     'age', 
+        //     'coach_name',
+        //     'team', 
+        // )
+        // ->orderBy('gender')
+        // ->orderBy('age')
+        // ->orderBy('weight')
+        // ->get();
+        // $this->data = $participants;
+        // return $participants;
+    // }
+    
     public function headings(): array
     {
         // External Excel File Header Columns

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Events\AfterSheet;
 
 
-class CompDataExport implements FromCollection, WithHeadings, WithEvents 
+class CompKataDataExport implements FromCollection, WithHeadings, WithEvents 
 {
     protected $competition_id;
     protected $data;
@@ -23,10 +23,7 @@ class CompDataExport implements FromCollection, WithHeadings, WithEvents
     {
         $participants = DB::table('participants')
         ->where('participants.competition_id', $this->competition_id)
-        ->where(function ($query) {
-            $query->whereNull('participants.kumite')
-                  ->orWhere('participants.kumite', '=', '1');
-        })
+        ->where('participants.kata', '=', '1')
         ->select('id', 'gender', DB::raw(' "0" as BN'),
             DB::raw(' "TBD" as CT'), DB::raw(' "0" as tatami'), DB::raw(' "TBD" as Session'), 'full_name',
             'no_of_part',

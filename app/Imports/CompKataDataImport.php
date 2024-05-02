@@ -7,10 +7,10 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
-use App\Models\BoutTempExcel;
+use App\Models\BoutKataTempExcel;
 
 
-class CompDataImport implements ToModel, WithStartRow //ToCollection
+class CompKataDataImport implements ToModel, WithStartRow //ToCollection
 {
     protected $competition_id;
 
@@ -21,7 +21,7 @@ class CompDataImport implements ToModel, WithStartRow //ToCollection
     public function model(array $row)
     {
         if(isset($row[0])) {
-            return new BoutTempExcel([
+            return new BoutKataTempExcel([
                 'unique_id' => (int) $row[0],
                 'bout_number' => $row[2],
                 'category' => $row[3],

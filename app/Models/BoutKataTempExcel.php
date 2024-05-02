@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BoutTempExcel extends Model
+class BoutKataTempExcel extends Model
 {
     use HasFactory;
+    
+    protected $table = 'bout_kata_temp_excels';
     
     protected $fillable = [
         'unique_id', 

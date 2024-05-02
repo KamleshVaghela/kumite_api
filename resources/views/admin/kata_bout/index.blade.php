@@ -55,7 +55,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Competitions</li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $decrypted_comp_id}}</li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $competition->COMP_NAME}}</li>
-                <li class="breadcrumb-item active" aria-current="page">Kumite Bouts Board</li>
+                <li class="breadcrumb-item active" aria-current="page">Kata Bouts Board</li>
             </ol>
         </nav>
         {{-- <div class="modal fade" id="addModal" tabindex="-1"></div>
@@ -64,7 +64,7 @@
         <div class="modal fade" id="addOutwardModal" tabindex="-1"></div> --}}
 
         <input id="btn_filter_data" type="hidden"
-            data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/bout/report')}}" />
+            data-href="{{URL::to('admin/competition/board/'.$decrypted_comp_id.'/kata/bout/report')}}" />
         <div id="div_report"></div>
         <div id="div_edit"></div>
 

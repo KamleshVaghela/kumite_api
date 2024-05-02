@@ -99,13 +99,13 @@
     @if($route == 'admin.competition')
     <script src="{{ asset('admin/competition.js?d='.time()) }}"></script>
     @endif
-    @if($route == 'admin.board.bout')
+    @if($route == 'admin.board.bout' || $route == 'admin.board.kata.bout')
     <script src="{{ asset('admin/bout.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board')
     <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
-    @if($route == 'admin.board.bout')
+    @if($route == 'admin.board.bout' || $route == 'admin.board.kata.bout')
     <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.board.bout.results')

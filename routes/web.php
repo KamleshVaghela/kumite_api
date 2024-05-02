@@ -99,6 +99,10 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/import_excel', 'importExcel')->name('admin.board.import_excel');
             Route::post('/competition/board/{encrypted_comp_id}/post_import_excel', 'postImportExcel')->name('admin.board.post_import_excel');
 
+            Route::get('/competition/board/{encrypted_comp_id}/export_kata_excel', 'exportKataExcel')->name('admin.board.export_kata_excel');
+            Route::get('/competition/board/{encrypted_comp_id}/import_kata_excel', 'importKataExcel')->name('admin.board.import_kata_excel');
+            Route::post('/competition/board/{encrypted_comp_id}/post_import_kata_excel', 'postImportKataExcel')->name('admin.board.post_import_kata_excel');
+
             Route::post('/competition/report', 'report')->name('admin.competition.report');
             Route::post('/competition/store', 'store')->name('admin.competition.store');
             Route::get('/competition/edit/{id}', 'edit')->name('admin.competition.edit');
@@ -129,6 +133,33 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/bout/results/report', 'results_report')->name('admin.board.bout.results_report');
             Route::get('/competition/board/{encrypted_comp_id}/bout/results/report/{view_type}', 'results_report_view_type')->name('admin.board.bout.results_report.view_type');
             Route::get('/competition/board/{encrypted_comp_id}/bout/results/report/download/{external_coach_code}/{download_type}', 'results_report_download_external_coach_code')->name('admin.board.bout.results_report.download.external_coach_code');
+        });
+
+        Route::controller(App\Http\Controllers\Admin\KataCompetitionBoutController::class)->group(function () {
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/index', 'index')->name('admin.board.kata.bout');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/report', 'report')->name('admin.board.bout.kata.report');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/download_all_bout', 'download_all_bout')->name('admin.board.bout.kata.download_all_bout');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/data_table', 'data_table')->name('admin.board.bout.kata.data_table');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/data_table/report', 'data_table_report')->name('admin.board.bout.kata.data_table.report');
+
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.kata.participants');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/download_bout', 'download_bout')->name('admin.board.bout.kata.download_bout');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/{participant_id}/change_bout', 'change_bout')->name('admin.board.bout.kata.change_bout');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/{participant_id}/save_change_bout', 'save_change_bout')->name('admin.board.bout.kata.save_change_bout');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.kata.karate_ka');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/{bout_id}/{custom_bout_id}/{participant_id}/save_data', 'save_data')->name('admin.board.bout.kata.save_data');
+
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/create', 'create')->name('admin.board.bout.kata.create');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/store', 'store')->name('admin.board.bout.kata.save');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/{encrypted_bout_id}/show', 'show')->name('admin.board.bout.kata.show');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/{encrypted_bout_id}/edit', 'edit')->name('admin.board.bout.kata.edit');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/{encrypted_bout_id}/update', 'update')->name('admin.board.bout.kata.update');
+            Route::post('/competition/board/{encrypted_comp_id}/kata/bout/{encrypted_bout_id}/destroy', 'destroy')->name('admin.board.bout.kata.destroy');
+
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/results/index', 'results_index')->name('admin.board.bout.kata.results');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/results/report', 'results_report')->name('admin.board.bout.kata.results_report');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/results/report/{view_type}', 'results_report_view_type')->name('admin.board.bout.kata.results_report.view_type');
+            Route::get('/competition/board/{encrypted_comp_id}/kata/bout/results/report/download/{external_coach_code}/{download_type}', 'results_report_download_external_coach_code')->name('admin.board.bout.kata.results_report.download.external_coach_code');
         });
 
         Route::controller(App\Http\Controllers\Admin\DefaultCategoryController::class)->group(function () {

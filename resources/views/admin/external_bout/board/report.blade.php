@@ -1,20 +1,4 @@
 <div class="container">
-    <nav class="nav nav-pills flex-column flex-sm-row">
-        <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
-            href="{{URL::to('admin/external_bout/board/'.$external_competition->id)."/export_excel"}}"><button
-                class="btn btn-outline-secondary" type="button">Export Excel</button></a>
-        <a class="flex-sm-fill text-sm-center nav-link active" href="#" onclick="loadDetails(this)"
-            data-href="{{URL::to('admin/external_bout/board/'.$external_competition->id)."/import_excel"}}"
-            data-details_key="importExcel">
-            <button class="btn btn-outline-info" type="button">Import Excel</button></a>
-
-        <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
-            href="{{URL::to('admin/external_bout/board/'.$external_competition->id)."/bout/data_table"}}"><button
-                class="btn btn-outline-success" type="button">Data Table</button></a>
-        <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
-            href="{{URL::to('admin/external_bout/board/'.$external_competition->id)."/bout/list/index"}}"><button
-                class="btn btn-outline-primary" type="button">Board</button></a>
-    </nav>
     <div class="row">
         <div class="col-sm">
             <div class="card" style="max-width: 350px;">
@@ -65,3 +49,62 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card-header border-0">
+                <h5 class="card-title">Kumite Actions</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card">
+                <nav class="nav nav-pills flex-column flex-sm-row">
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/export_excel'}}"><button
+                            class="btn btn-outline-secondary" type="button">Export Sample Excel</button></a>
+                    <a class="flex-sm-fill text-sm-center nav-link active" href="#" onclick="loadDetails(this)"
+                        data-href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/import_excel'}}"
+                        data-details_key="importExcel">
+                        <button class="btn btn-outline-info" type="button">Import Excel</button></a>
+
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/bout/data_table'}}"><button
+                            class="btn btn-outline-success" type="button">Data Table</button></a>
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/bout/list/index'}}"><button
+                            class="btn btn-outline-primary" type="button">Board</button></a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card-header border-0">
+                <h5 class="card-title">Kata Actions</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="card">
+                <nav class="nav nav-pills flex-column flex-sm-row">
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/export_excel'}}"><button
+                            class="btn btn-outline-secondary" type="button">Export Sample Excel</button></a>
+                    <a class="flex-sm-fill text-sm-center nav-link active" href="#" onclick="loadDetails(this)"
+                        data-href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/import_excel'}}"
+                        data-details_key="importExcel">
+                        <button class="btn btn-outline-info" type="button">Import Excel</button></a>
+
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/bout/data_table'}}"><button
+                            class="btn btn-outline-success" type="button">Data Table</button></a>
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/external_bout/board/'.$external_competition->id).'/bout/list/index'}}"><button
+                            class="btn btn-outline-primary" type="button">Board</button></a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>

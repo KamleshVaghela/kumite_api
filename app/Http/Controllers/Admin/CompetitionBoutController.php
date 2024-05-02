@@ -54,6 +54,10 @@ class CompetitionBoutController extends Controller
             if($bout_type->bout_id_count != "0") {
                 $bout_records = DB::table("participants")    
                 ->where('participants.competition_id',$compModel->id)
+                ->where(function ($query) {
+                    $query->whereNull('participants.kumite')
+                          ->orWhere('participants.kumite', '=', '1');
+                })
                 ->join("bout_participant_details", function($join) {
                     $join->on("bout_participant_details.participant_id", "=", "participants.id");
                 })
@@ -71,6 +75,10 @@ class CompetitionBoutController extends Controller
             } else if($bout_type->custom_bouts_id_count != "0") {
                 $bout_records = DB::table("participants")    
                 ->where('participants.competition_id',$compModel->id)
+                ->where(function ($query) {
+                    $query->whereNull('participants.kumite')
+                          ->orWhere('participants.kumite', '=', '1');
+                })
                 ->leftJoin("bout_participant_details", function($join) {
                     $join->on("bout_participant_details.participant_id", "=", "participants.id");
                 })
@@ -124,6 +132,10 @@ class CompetitionBoutController extends Controller
             if($bout_type->bout_id_count != "0") {
                 $participants_records = DB::table("participants")    
                 ->where('participants.competition_id',$compModel->id)
+                ->where(function ($query) {
+                    $query->whereNull('participants.kumite')
+                          ->orWhere('participants.kumite', '=', '1');
+                })
                 ->leftJoin("bout_participant_details", function($join) {
                     $join->on("bout_participant_details.participant_id", "=", "participants.id");
                 })
@@ -138,6 +150,10 @@ class CompetitionBoutController extends Controller
             } else if($bout_type->custom_bouts_id_count != "0") {
                 $participants_records = DB::table("participants")    
                 ->where('participants.competition_id',$compModel->id)
+                ->where(function ($query) {
+                    $query->whereNull('participants.kumite')
+                          ->orWhere('participants.kumite', '=', '1');
+                })
                 ->leftJoin("bout_participant_details", function($join) {
                     $join->on("bout_participant_details.participant_id", "=", "participants.id");
                 })
@@ -183,6 +199,10 @@ class CompetitionBoutController extends Controller
         else if($bout_id != "0") {
             $participants_records = DB::table("participants")    
             ->where('participants.competition_id',$compModel->id)
+            ->where(function ($query) {
+                $query->whereNull('participants.kumite')
+                      ->orWhere('participants.kumite', '=', '1');
+            })
             ->leftJoin("bout_participant_details", function($join) {
                 $join->on("bout_participant_details.participant_id", "=", "participants.id");
             })
@@ -197,6 +217,10 @@ class CompetitionBoutController extends Controller
             $participants_records = DB::table("participants")    
             // ->where('bout_participant_details.bout_id',$bout_id)
             ->where('participants.competition_id',$compModel->id)
+            ->where(function ($query) {
+                $query->whereNull('participants.kumite')
+                      ->orWhere('participants.kumite', '=', '1');
+            })
             ->leftJoin("bout_participant_details", function($join) {
                 $join->on("bout_participant_details.participant_id", "=", "participants.id");
             })
@@ -613,6 +637,10 @@ class CompetitionBoutController extends Controller
         else if($bout_id == "0") {
             $participants_records = DB::table("participants")    
             ->where('participants.competition_id',$compModel->id)
+            ->where(function ($query) {
+                $query->whereNull('participants.kumite')
+                      ->orWhere('participants.kumite', '=', '1');
+            })
             ->leftJoin("bout_participant_details", function($join) {
                 $join->on("bout_participant_details.participant_id", "=", "participants.id");
             })
@@ -823,28 +851,62 @@ class CompetitionBoutController extends Controller
         switch($view_type) {
             case('coach'):
                 $result_data = DB::select('
-                    SELECT external_coach_name,  SUM(total_gold) as total_gold, SUM(total_silver) as total_silver, SUM(total_bronze_1) as total_bronze_1, SUM(total_bronze_2) as total_bronze_2 
+                    SELECT external_coach_name, SUM(total_gold) as total_gold, SUM(total_silver) as total_silver, SUM(total_bronze_1) as total_bronze_1, SUM(total_bronze_2) as total_bronze_2 
+                    ,SUM(total_gold_kata) as total_gold_kata, SUM(total_silver_kata) as total_silver_kata, SUM(total_bronze_1_kata) as total_bronze_1_kata, SUM(total_bronze_2_kata) as total_bronze_2_kata 
                     FROM (
                         SELECT F.external_coach_name, count(C.first) as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.first = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.external_coach_name
                         UNION ALL 
                         SELECT F.external_coach_name, 0 as total_gold, count(C.second) as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.second = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.external_coach_name
                         UNION ALL 
                         SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, count(C.third_1) as total_bronze_1 , 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.third_1 = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.external_coach_name
                         UNION ALL 
                         SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, count(C.third_2) as total_bronze_2 
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
+                        INNER join participants F on C.third_2 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL
+
+                        SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        ,count(C.first) as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.first = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL 
+                        SELECT F.external_coach_name, 0 as total_gold, 0 as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        ,0 as total_gold_kata , count(C.second) as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.second = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL 
+                        SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver,0  as total_bronze_1 , 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, count(C.third_1) as total_bronze_1_kata , 0 as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.third_1 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.external_coach_name
+                        UNION ALL 
+                        SELECT F.external_coach_name, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, 0 as total_bronze_2 
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , count(C.third_2) as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
                         INNER join participants F on C.third_2 = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.external_coach_name
@@ -857,30 +919,67 @@ class CompetitionBoutController extends Controller
             case('team'):
                 $result_data = DB::select('
                     SELECT team,  SUM(total_gold) as total_gold, SUM(total_silver) as total_silver, SUM(total_bronze_1) as total_bronze_1, SUM(total_bronze_2) as total_bronze_2 
+                    ,SUM(total_gold_kata) as total_gold_kata, SUM(total_silver_kata) as total_silver_kata, SUM(total_bronze_1_kata) as total_bronze_1_kata, SUM(total_bronze_2_kata) as total_bronze_2_kata 
                     FROM (
                         SELECT F.team, count(C.first) as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.first = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.team
                         UNION ALL 
                         SELECT F.team, 0 as total_gold, count(C.second) as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.second = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.team
                         UNION ALL 
                         SELECT F.team, 0 as total_gold , 0 as total_silver, count(C.third_1) as total_bronze_1 , 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.third_1 = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.team
                         UNION ALL 
-                        SELECT F.team, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, count(C.third_2) as total_bronze_2 
+                        SELECT F.team, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, count(C.third_2) as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
                         FROM custom_bouts C 
                         INNER join participants F on C.third_2 = F.id
                         where C.competition_id='.$compModel->id.' 
                         group by F.team
+
+                        UNION ALL 
+
+
+                        SELECT F.team, count(C.first) as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        ,count(C.first) as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.first = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                        UNION ALL 
+                        SELECT F.team, 0 as total_gold, 0 as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        ,0 as total_gold_kata , count(C.second) as total_silver_kata, 0 as total_bronze_1_kata , 0 as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.second = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                        UNION ALL 
+                        SELECT F.team, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1 , 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, count(C.third_1) as total_bronze_1_kata , 0 as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.third_1 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+                        UNION ALL 
+                        SELECT F.team, 0 as total_gold , 0 as total_silver, 0 as total_bronze_1, 0 as total_bronze_2
+                        ,0 as total_gold_kata , 0 as total_silver_kata, 0 as total_bronze_1_kata , count(C.third_2) as total_bronze_2_kata
+                        FROM custom_kata_bouts C 
+                        INNER join participants F on C.third_2 = F.id
+                        where C.competition_id='.$compModel->id.' 
+                        group by F.team
+
                     ) X 
                     GROUP BY team
                     ORDER BY total_gold desc,total_silver desc
@@ -896,7 +995,7 @@ class CompetitionBoutController extends Controller
             default:
                 $msg = 'Something went wrong.';
         }
-
+        // dd($result_data);
         return View('admin.bout.results_report',compact('decrypted_comp_id'))
         ->with('view_type',$view_type)
         ->with('details_key', $details_key)
@@ -1081,19 +1180,21 @@ class CompetitionBoutController extends Controller
         
         $certificate_text_1_conf = Config::get('constants.competition_certificate.'.$compModel->comp_id.'.text_1');
 
-        $competition_logo_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_logo_left');
-        $competition_logo_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_logo_right');
+        $competition_logo_left = Config::get('constants.competition_card.competition_logo_left');
+        $competition_logo_right = Config::get('constants.competition_card.competition_logo_right');
         
-        $competition_name_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_left');
-        $competition_name_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_right');
+        $competition_name_left = Config::get('constants.competition_card.competition_name_left');
+        $competition_name_right = Config::get('constants.competition_card.competition_name_right');
 
-        $competition_image_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_image_left');
-        $competition_image_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_image_right');
+        $competition_image_left = Config::get('constants.competition_card.competition_image_left');
+        $competition_image_right = Config::get('constants.competition_card.competition_image_right');
 
-        $competition_part_name_left = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_part_name_left');
-        $competition_part_name_right = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_part_name_right');
+        $competition_part_name_left = Config::get('constants.competition_card.competition_part_name_left');
+        $competition_part_name_right = Config::get('constants.competition_card.competition_part_name_right');
         $competition_name_text_1 = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_text_1');
         $competition_name_text_2 = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_name_text_2');
+
+        $competition_part_name_size = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_part_name_size');
 
         $competition_date = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_date');
         $competition_vanue = Config::get('constants.competition_card.'.$compModel->comp_id.'.competition_vanue');
@@ -1129,7 +1230,7 @@ class CompetitionBoutController extends Controller
                 $fpdi->Image('competition/logo.png' , $competition_logo_left + $diff , ($sequence * 65) + $competition_logo_right, 18, 18, "PNG");
                 
                 $fpdi->SetTextColor(255,255,255);
-                $fpdi->SetFont("ariblk", "", 14);
+                $fpdi->SetFont("ariblk", "", $competition_part_name_size);
                 
                 $fpdi->Text($competition_name_left + $diff, ($sequence * 65) + $competition_name_right, $competition_name_text_1, 'C');
                 $fpdi->Text($competition_name_left + $diff - 5, ($sequence * 65) + $competition_name_right + 7, $competition_name_text_2, 'C');

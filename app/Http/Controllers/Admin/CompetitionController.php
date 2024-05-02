@@ -17,11 +17,16 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Config;
 use App\Exports\CompDataExport;
+use App\Exports\CompKataDataExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CompDataImport;
+use App\Imports\CompKataDataImport;
 use App\Models\BoutTempExcel;
 use App\Models\customBout;
 use App\Models\FightDetail;
+use App\Models\BoutKataParticipantDetail;
+use App\Models\customKataBout;
+use App\Models\BoutKataTempExcel;
 
 class CompetitionController extends Controller
 {
@@ -270,6 +275,10 @@ class CompetitionController extends Controller
                 $compParticipant->rank = $karateKa->RANK;
                 $compParticipant->rank_id = $karateKa->RANK_ID;
                 $compParticipant->rank_kyu = $karateKa->KYU;
+
+                $compParticipant->kumite = $competition_part->KUMITE;
+                $compParticipant->kata = $competition_part->KATA;
+
                 $compParticipant->external_coach_code = $karateKa->COACH_ID;
                 $compParticipant->external_coach_name = $karateKa->COACH_NAME;
 
@@ -730,6 +739,7 @@ class CompetitionController extends Controller
 
         return View('admin.competition.board.import_excel',compact('details_key'))
         ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('post_method','post_import_excel')
         // ->with('competition',$competition)
         ;
     }
@@ -901,5 +911,103 @@ class CompetitionController extends Controller
                   }
             }
         }
+    }
+
+    public function exportKataExcel($decrypted_comp_id)
+    {
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        return Excel::download(new CompKataDataExport($compModel->id), 'Competition_'.$compModel->id.'.xlsx');
+    }
+
+    public function importKataExcel($decrypted_comp_id, Request $request)
+    {
+        $details_key = $request->query('details_key');
+
+        return View('admin.competition.board.import_excel',compact('details_key'))
+        ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('post_method','post_import_kata_excel')
+        ;
+    }
+
+    public function postImportKataExcel($decrypted_comp_id, Request $request) {
+        $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        $data = BoutKataTempExcel::where('competition_id',$compModel->id)->delete();
+        $bouts = customKataBout::where('competition_id',$compModel->id)->delete();
+        $boutParticipantDetails = BoutKataParticipantDetail::where('competition_id',$compModel->id)->delete();
+
+        Excel::import(new CompKataDataImport($compModel->id), 
+                      $request->file('file')->store('files'));
+
+        $excelRecords = BoutKataTempExcel::where('competition_id',$compModel->id)
+        ->orderBy('gender')
+        // ->orderBy('bout_number')
+        ->orderBy('category')
+        ->get();
+        // $male_cnt = 1;
+        $participant_cnt = 1;
+        // $female_cnt = 1;
+        foreach($excelRecords as $records) {
+            $boutData = customKataBout::where('competition_id', $records->competition_id)
+                ->where('gender',$records->gender)
+                ->where('category',$records->category)
+                // ->where('bout_number',$male_cnt)
+                ->first();
+            if($boutData) {
+                $participant_cnt = $participant_cnt + 1;
+
+            } else {
+                $boutData = new customKataBout();
+                $boutData->competition_id = $records->competition_id;
+                $boutData->gender = $records->gender;
+                $boutData->category = $records->category;
+                $boutData->tatami = $records->tatami;
+                $boutData->session = $records->session;
+                $boutData->bout_number= $records->bout_number;
+                // if ($records->gender == "Male") {
+                //     $boutData->bout_number = $male_cnt;
+                //     $male_cnt = $male_cnt + 1;
+                // }
+                // else {
+                //     $boutData->bout_number = $female_cnt;
+                //     $female_cnt = $female_cnt + 1;
+                // }
+                $boutData->save();
+                $participant_cnt = 1;
+            }
+
+            $compBoutParticipantDetail = new BoutKataParticipantDetail();
+            $compBoutParticipantDetail->competition_id = $records->competition_id;
+            $compBoutParticipantDetail->custom_bouts_id = $boutData->id;
+            $compBoutParticipantDetail->participant_id = $records->unique_id;
+            $compBoutParticipantDetail->participant_sequence = $participant_cnt;
+            $compBoutParticipantDetail->user_id = Auth::user()->id;
+            $compBoutParticipantDetail->last_modified = \Carbon\Carbon::now();
+            $compBoutParticipantDetail->last_modified_user_id = Auth::user()->id;
+            $compBoutParticipantDetail->save();
+
+        }
+
+        // $customBoutData = customBout::where('competition_id',$records->competition_id)
+        // ->orderBy('id')
+        // ->get();
+
+        // foreach($customBoutData as $boutData) {
+            
+        //     $participants_records = DB::table("bout_participant_details")
+        //     ->where('bout_participant_details.custom_bouts_id',$boutData->id)
+        //     ->join("participants", function($join) {
+        //         $join->on("bout_participant_details.participant_id", "=", "participants.id");
+        //     })
+        //     ->select("bout_participant_details.id", "participants.external_coach_code")
+        //     ->get();
+
+        //     $this->processFightData($participants_records, $boutData->id);
+        // }
+
+        return response([
+            'data' => '',
+            'message' => 'Excel Imported successfully',
+            'alert-type' => 'success'
+        ], 200);
     }
 }
