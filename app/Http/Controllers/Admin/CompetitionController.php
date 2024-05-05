@@ -730,7 +730,7 @@ class CompetitionController extends Controller
     public function exportExcel($decrypted_comp_id)
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
-        return Excel::download(new CompDataExport($compModel->id), 'Competition_'.$compModel->id.'.xlsx');
+        return Excel::download(new CompDataExport($compModel->id), 'Kumite_Competition_'.$compModel->id.'.xlsx');
     }
 
     public function importExcel($decrypted_comp_id, Request $request)
@@ -916,7 +916,7 @@ class CompetitionController extends Controller
     public function exportKataExcel($decrypted_comp_id)
     {
         $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
-        return Excel::download(new CompKataDataExport($compModel->id), 'Competition_'.$compModel->id.'.xlsx');
+        return Excel::download(new CompKataDataExport($compModel->id), 'Kata_Competition_'.$compModel->id.'.xlsx');
     }
 
     public function importKataExcel($decrypted_comp_id, Request $request)

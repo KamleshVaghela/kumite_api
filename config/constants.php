@@ -530,6 +530,14 @@ return [
             'competition_vanue' => 'Yugpurush Vivekananda Sports Complex, Bakrol, ANAND',
         ],
     ],
+    'kata_player_location' => [
+        'left'=> 30,
+        'right' => 60,
+        'font' => 'helvetica',
+        'style' => 'b',
+        'fontsize' => 14,
+        'space' => 12,
+    ],
     "start_date" => "2023/09/01",
     'avatar_url' => 'https://apiv2.wadokaikarate.in/show_files'
 ];
