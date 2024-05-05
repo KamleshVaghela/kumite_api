@@ -64,6 +64,32 @@ Route::group(['middleware' => 'web'], function () {
 
         });
 
+        Route::controller(App\Http\Controllers\Admin\ExternalKataBoutGenerationController::class)->group(function () {
+            
+            Route::get('/external_bout/board/{external_comp_id}/export_excel_kata', 'exportExcel')->name('admin.external_bout.board.export_excel_kata');
+            Route::get('/external_bout/board/{external_comp_id}/import_excel_kata', 'importExcel')->name('admin.external_bout.board.import_excel_kata');
+            Route::post('/external_bout/board/{external_comp_id}/post_import_excel_kata', 'postImportExcel')->name('admin.external_bout.board.post_import_excel_kata');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/data_table_kata', 'data_table')->name('admin.external_bout.board.bout.data_table_kata');
+            Route::post('/external_bout/board/{external_comp_id}/bout/data_table/report_kata', 'data_table_report')->name('admin.external_bout.board.bout.data_table.report_kata');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/index_kata', 'board_list_index')->name('admin.external_bout.board.bout.list_kata');
+            Route::post('/external_bout/board/{external_comp_id}/bout/list/report_kata', 'board_list_report')->name('admin.external_bout.board.bout.list.report_kata');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/{bout_id}/participants_kata', 'board_list_index_participants')
+            ->name('admin.external_bout.board.bout.list.participants_kata');
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/{bout_id}/karate_ka_kata/{participant_id}', 'board_list_index_karate_ka')
+            ->name('admin.external_bout.board.bout.list.karate_ka_kata');
+
+
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/download_all_bout_kata', 'board_list_download_all_bout')
+            ->name('admin.external_bout.board.bout.download_all_bout_kata');
+            Route::get('/external_bout/board/{external_comp_id}/bout/list/{bout_id}/download_bout_kata', 'board_list_download_bout')
+            ->name('admin.external_bout.board.bout.download_bout_kata');
+
+        });
+
         Route::controller(App\Http\Controllers\Admin\CompetitionController::class)->group(function () {
             Route::get('/competition', 'index')->name('admin.competition');
             Route::get('/competition/create', 'create')->name('admin.competition.create');

@@ -118,7 +118,7 @@
     <script src="{{ asset('admin/school_master.js?d='.time()) }}"></script>
     @endif
     @if($route == 'admin.external_bout' || $route == 'admin.external_bout.board' || $route ==
-    'admin.external_bout.board.bout.list')
+    'admin.external_bout.board.bout.list' || $route == 'admin.external_bout.board.bout.list_kata')
     <script src="{{ asset('admin/external_bout.js?d='.time()) }}"></script>
     @endif
 
