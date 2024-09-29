@@ -146,7 +146,7 @@ class CompetitionBoutController extends Controller
                 ->leftJoin("bouts", function($join) {
                     $join->on("bouts.id", "=", "bout_participant_details.bout_id");
                 })
-                ->select("bouts.id as bouts_id", "bouts.category as bouts_category",
+                ->select("bouts.id as bouts_id", "bouts.category as bouts_category","bouts.bout_number", 
                     "participants.*", DB::raw("0 as custom_bout_id")
                 )
                 ->orderBy('bouts.id')
@@ -164,7 +164,7 @@ class CompetitionBoutController extends Controller
                 ->leftJoin("custom_bouts", function($join) {
                     $join->on("custom_bouts.id", "=", "bout_participant_details.custom_bouts_id");
                 })
-                ->select("custom_bouts.id as custom_bout_id", "custom_bouts.category as bouts_category",
+                ->select("custom_bouts.id as custom_bout_id", "custom_bouts.category as bouts_category", "custom_bouts.bout_number", 
                     "participants.*", DB::raw("0 as bouts_id")
                 )
                 ->orderBy('custom_bouts.id')
@@ -179,6 +179,32 @@ class CompetitionBoutController extends Controller
         ->with('participants_records',$participants_records)
         ->with('bout_id',$bout_type->bout_id_count)
         ->with('custom_bout_id',$bout_type->custom_bouts_id_count);
+    }
+
+    public function get_participant_data($decrypted_comp_id, $participant_id, Request $request) {
+        $participant = Participant::find($participant_id);
+        return View('admin.bout.get_participant_data',compact('decrypted_comp_id'))
+        ->with('participant_id',$participant_id)
+        ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('participant',$participant)
+        ;
+    }
+
+    public function post_participant_data(Request $request, $decrypted_comp_id, $participant_id) {
+
+        $request->validate([
+            'gender' => 'required',
+        ]);
+        
+        $participant = Participant::find($participant_id);
+        $participant->gender = $request->gender;
+        $participant->save();
+
+        return response([
+            'data' => $participant,
+            'message' => 'Data updated successfully',
+            'alert-type' => 'success'
+        ], 200);
     }
 
     public function participants($decrypted_comp_id, $bout_id, $custom_bout_id)
@@ -757,6 +783,82 @@ class CompetitionBoutController extends Controller
         return new Response($fileContents, 200, $headers);
         // $fpdi->Output('I', $outputFilePathNew, true);
 
+    }
+
+    public function clear_bout_result($decrypted_comp_id, $bout_id, $custom_bout_id, Request $request) {
+        $details_key = $request->query('details_key');
+        $boutObj = customBout::find($custom_bout_id);
+        return View('admin.bout.clear_bout_result',compact('decrypted_comp_id'))
+        ->with('details_key', $details_key)
+        ->with('boutObj',$boutObj)
+        ->with('decrypted_comp_id',$decrypted_comp_id)
+        ->with('bout_id',$bout_id)
+        ->with('custom_bout_id',$custom_bout_id)
+        ;
+    }
+    
+    public function post_clear_bout_result(Request $request, $decrypted_comp_id, $bout_id, $custom_bout_id)
+    {
+        // $compModel = Competition::where('comp_id',$decrypted_comp_id)->first();
+        // $participants_records = DB::table("bout_participant_details")
+        // ->where('bout_participant_details.custom_bouts_id',$custom_bout_id)
+        // ->where('participants.competition_id',$compModel->id)
+        // ->join("participants", function($join) {
+        //     $join->on("bout_participant_details.participant_id", "=", "participants.id");
+        // })
+        // ->leftJoin("custom_bouts", function($join) {
+        //     $join->on("custom_bouts.id", "=", "bout_participant_details.custom_bouts_id");
+        // })
+        // ->select("participants.*", "custom_bouts.first", "custom_bouts.second", "custom_bouts.third_1", "custom_bouts.third_2", "bout_participant_details.participant_sequence")
+        // ->orderBy('bout_participant_details.participant_sequence')
+        // ->get();
+        
+        $dataObj = customBout::find($custom_bout_id);
+        // dd($dataObj);
+        if($dataObj->first && $dataObj->first > 0) {
+            $participant = Participant::find($dataObj->first);
+            // dd($participant);
+            if($participant){
+                $competitionPartModel = CompetitionPartModel::find($participant->external_unique_id);
+                $competitionPartModel->KUMITE_RES = null;
+                $competitionPartModel->save();
+            }
+        }
+        if($dataObj->second && $dataObj->second > 0) {
+            $participant = Participant::find($dataObj->second);
+            if($participant){
+                $competitionPartModel = CompetitionPartModel::find($participant->external_unique_id);
+                $competitionPartModel->KUMITE_RES = null;
+                $competitionPartModel->save();
+            }
+        }
+        if($dataObj->third_2 && $dataObj->third_2 > 0) {
+            $participant = Participant::find($dataObj->third_2);
+            if($participant){
+                $competitionPartModel = CompetitionPartModel::find($participant->external_unique_id);
+                $competitionPartModel->KUMITE_RES = null;
+                $competitionPartModel->save();
+            }
+        }
+        if($dataObj->third_1 && $dataObj->third_1 > 0) {
+            $participant = Participant::find($dataObj->third_1);
+            if($participant){
+                $competitionPartModel = CompetitionPartModel::find($participant->external_unique_id);
+                $competitionPartModel->KUMITE_RES = null;
+                $competitionPartModel->save();
+            }
+        }
+        
+        $dataObj->first = null;
+        $dataObj->second = null;
+        $dataObj->third_2 = null;
+        $dataObj->third_1 = null;
+        $dataObj->save();       
+        return response([
+            'data' => $dataObj,
+            'message' => 'Result updated successfully',
+            'alert-type' => 'success'
+        ], 200); 
     }
 
     public function generate_back_page($fpdi, $bout_record, $compModel)

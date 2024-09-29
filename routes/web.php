@@ -140,9 +140,13 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/download_all_bout', 'download_all_bout')->name('admin.board.bout.download_all_bout');
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table', 'data_table')->name('admin.board.bout.data_table');
             Route::get('/competition/board/{encrypted_comp_id}/bout/data_table/report', 'data_table_report')->name('admin.board.bout.data_table.report');
-
-            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.participants');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/data_table/{participant_id}/get_participant_data', 'get_participant_data')->name('admin.board.bout.data_table.get_participant_data');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/data_table/{participant_id}/post_participant_data', 'post_participant_data')->name('admin.board.bout.data_table.post_participant_data');
+            
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/participants', 'participants')->name('admin.board.bout.participants');            
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/download_bout', 'download_bout')->name('admin.board.bout.download_bout');
+            Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/clear_bout_result', 'clear_bout_result')->name('admin.board.bout.clear_bout_result');
+            Route::post('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/post_clear_bout_result', 'post_clear_bout_result')->name('admin.board.bout.post_clear_bout_result');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/change_bout', 'change_bout')->name('admin.board.bout.change_bout');
             Route::post('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/save_change_bout', 'save_change_bout')->name('admin.board.bout.save_change_bout');
             Route::get('/competition/board/{encrypted_comp_id}/bout/{bout_id}/{custom_bout_id}/{participant_id}/karate_ka', 'karate_ka')->name('admin.board.bout.karate_ka');
