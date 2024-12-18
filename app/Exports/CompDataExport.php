@@ -44,7 +44,7 @@ class CompDataExport implements FromCollection, WithHeadings, WithEvents
     }
      public function headings(): array
     {
-        return ['Unique Id', 'Gender', 'Bout Number', 'Category', 'Tatami', 'Session',  'Name', 'No of Participation', 'Membership Years', 'Team', 'Age', 'Weight', 'Rank', 'Rank Kyu', 'Coach'];
+        return ['Unique Id', 'Gender', 'Bout Number', 'Category', 'Tatami', 'Session',  'Name', 'No of Participation', 'Membership Years', 'Team', 'Age', 'Weight', 'Rank', 'Rank Kyu', 'Coach', 'Age Category', 'Weight Category','Rank Category'];
     }
 
     public function registerEvents(): array

@@ -29,6 +29,9 @@ class CompDataImport implements ToModel, WithStartRow //ToCollection
                 'session' => $row[5],
                 'competition_id' => (int) $this->competition_id,
                 'gender' => $row[1],
+                'age_category' => $row[15],
+                'weight_category' => $row[16],
+                'rank_category' => $row[17]
             ]);
         } else {
             return null;

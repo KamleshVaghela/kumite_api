@@ -17,6 +17,9 @@ class BoutTempExcel extends Model
         'session',
         'competition_id',
         'gender',
+        'age_category',
+        'weight_category',
+        'rank_category'
     ];
 
 }
