@@ -6,7 +6,7 @@ $route = Route::current()->getName();
 <div class="navdrawer navdrawer-default" id="navdrawerDefault" tabindex="-1" aria-hidden="true" style="display: none;">
     <div class="navdrawer-content">
         <div class="navdrawer-header">
-            <a class="navbar-brand px-0" href="javascript:void(0)">Pratibha Academy</a>
+            <a class="navbar-brand px-0" href="javascript:void(0)">Wado Kai</a>
         </div>
         <p class="navdrawer-subheader">Link</p>
         <nav class="navdrawer-nav">
