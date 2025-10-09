@@ -122,7 +122,7 @@
     <script src="{{ asset('admin/external_bout.js?d='.time()) }}"></script>
     @endif
 
-    @if($route == 'admin.board.bout.data_table')
+    @if($route == 'admin.board.bout.data_table' || $route == 'admin.board.bout.kata.data_table')
     <script src="https://cdn.datatables.net/v/bs5/dt-1.13.6/datatables.min.js"></script>
     <script src="{{ asset('admin/board.js?d='.time()) }}"></script>
     @endif

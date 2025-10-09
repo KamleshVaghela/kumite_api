@@ -932,9 +932,13 @@ class CompetitionController extends Controller
         $participant_cnt = 1;
         // $female_cnt = 1;
         foreach ($excelRecords as $records) {
+            $tmp_category = 'BOYS '.$records->age_category.' '.$records->weight_category.' '.$records->rank_category;
+            if ($records->gender == 'Female') {
+                $tmp_category = 'GIRLS '.$records->age_category.' '.$records->weight_category.' '.$records->rank_category;
+            }
             $boutData = customKataBout::where('competition_id', $records->competition_id)
                 ->where('gender', $records->gender)
-                ->where('category', $records->category)
+                ->where('category', $tmp_category)
                 // ->where('bout_number',$male_cnt)
                 ->first();
             if ($boutData) {
@@ -943,7 +947,7 @@ class CompetitionController extends Controller
                 $boutData = new customKataBout();
                 $boutData->competition_id = $records->competition_id;
                 $boutData->gender = $records->gender;
-                $boutData->category = $records->category;
+                $boutData->category = $tmp_category;
                 $boutData->tatami = $records->tatami;
                 $boutData->session = $records->session;
                 $boutData->bout_number = $records->bout_number;

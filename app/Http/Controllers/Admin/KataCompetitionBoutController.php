@@ -59,7 +59,7 @@ class KataCompetitionBoutController extends Controller
                     $query->whereNull('participants.kata')
                           ->orWhere('participants.kata', '=', '1');
                 })
-                ->join('bout_kata_participant_details', function ($join) {
+                ->leftJoin('bout_kata_participant_details', function ($join) {
                     $join->on('bout_kata_participant_details.participant_id', '=', 'participants.id');
                 })
                 ->join('bouts', function ($join) {
@@ -80,7 +80,7 @@ class KataCompetitionBoutController extends Controller
                     $query->whereNull('participants.kata')
                           ->orWhere('participants.kata', '=', '1');
                 })
-                ->leftJoin('bout_kata_participant_details', function ($join) {
+                ->join('bout_kata_participant_details', function ($join) {
                     $join->on('bout_kata_participant_details.participant_id', '=', 'participants.id');
                 })
                 ->leftJoin('custom_kata_bouts', function ($join) {
@@ -155,7 +155,7 @@ class KataCompetitionBoutController extends Controller
                     $query->whereNull('participants.kumite')
                           ->orWhere('participants.kumite', '=', '1');
                 })
-                ->leftJoin('bout_kata_participant_details', function ($join) {
+                ->join('bout_kata_participant_details', function ($join) {
                     $join->on('bout_kata_participant_details.participant_id', '=', 'participants.id');
                 })
                 ->leftJoin('custom_kata_bouts', function ($join) {

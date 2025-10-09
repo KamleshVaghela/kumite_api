@@ -8,7 +8,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Competitions</li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $decrypted_comp_id}}</li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $competition->COMP_NAME}}</li>
-                <li class="breadcrumb-item active" aria-current="page">Data Table</li>
+                <li class="breadcrumb-item active" aria-current="page">Kata Data Table</li>
             </ol>
         </nav>
 

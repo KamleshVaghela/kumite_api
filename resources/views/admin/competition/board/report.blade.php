@@ -9,9 +9,6 @@
                         <button class="btn btn-outline-success" type="button">Refresh Data</button>
                     </a>
                     <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
-                        href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/data_table"}}"><button
-                            class="btn btn-outline-success" type="button">Data Table</button></a>
-                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
                         href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/results/index"}}"><button
                             class="btn btn-outline-success" type="button">Results & Downloads</button></a>
                 </nav>
@@ -40,6 +37,9 @@
                     <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
                         href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/index"}}">
                         <button class="btn btn-outline-primary" type="button">Board</button></a>
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/bout/data_table"}}"><button
+                            class="btn btn-outline-success" type="button">Data Table</button></a>
                 </nav>
             </div>
         </div>
@@ -66,6 +66,9 @@
                     <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
                         href="{{URL::to('admin/competition/board/'.$competition->COMP_ID).'/kata/bout/index'}}">
                         <button class="btn btn-outline-secondary" type="button">Board</button></a>
+                    <a class="flex-sm-fill text-sm-center nav-link active" target="_blank"
+                        href="{{URL::to('admin/competition/board/'.$competition->COMP_ID)."/kata/bout/data_table"}}"><button
+                            class="btn btn-outline-success" type="button">Data Table</button></a>
                 </nav>
             </div>
         </div>
