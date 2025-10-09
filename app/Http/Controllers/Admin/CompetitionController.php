@@ -947,6 +947,9 @@ class CompetitionController extends Controller
                 $boutData->tatami = $records->tatami;
                 $boutData->session = $records->session;
                 $boutData->bout_number = $records->bout_number;
+                $boutData->age_category = $records->age_category;
+                $boutData->weight_category = $records->weight_category;
+                $boutData->rank_category = $records->rank_category;
                 // if ($records->gender == "Male") {
                 //     $boutData->bout_number = $male_cnt;
                 //     $male_cnt = $male_cnt + 1;

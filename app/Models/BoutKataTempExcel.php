@@ -8,17 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class BoutKataTempExcel extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'bout_kata_temp_excels';
-    
+
     protected $fillable = [
-        'unique_id', 
-        'bout_number', 
-        'category', 
+        'unique_id',
+        'bout_number',
+        'category',
         'tatami',
         'session',
         'competition_id',
         'gender',
+        'age_category',
+        'weight_category',
+        'rank_category',
     ];
-
 }
