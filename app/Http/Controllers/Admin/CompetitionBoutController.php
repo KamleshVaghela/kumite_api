@@ -570,7 +570,7 @@ class CompetitionBoutController extends Controller
                 $dataObj->third_3 = 0;
             }
         } elseif ($request->result == '5') {
-            $dataObj->third_2 = $participant_id;
+            $dataObj->third_3 = $participant_id;
             $competitionPartModel->KUMITE_RES = 3;
 
             if ($dataObj->first == $participant_id) {
