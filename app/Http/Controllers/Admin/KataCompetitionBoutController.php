@@ -489,6 +489,9 @@ class KataCompetitionBoutController extends Controller
             if ($dataObj->third_2 == $participant_id) {
                 $dataObj->third_2 = 0;
             }
+            if ($dataObj->third_3 == $participant_id) {
+                $dataObj->third_3 = 0;
+            }
         } elseif ($request->result == '2') {
             $dataObj->second = $participant_id;
             $competitionPartModel->KATA_RES = 2;
@@ -501,6 +504,9 @@ class KataCompetitionBoutController extends Controller
             }
             if ($dataObj->third_2 == $participant_id) {
                 $dataObj->third_2 = 0;
+            }
+            if ($dataObj->third_3 == $participant_id) {
+                $dataObj->third_3 = 0;
             }
         } elseif ($request->result == '3') {
             $dataObj->third_1 = $participant_id;
@@ -515,6 +521,9 @@ class KataCompetitionBoutController extends Controller
             if ($dataObj->third_2 == $participant_id) {
                 $dataObj->third_2 = 0;
             }
+            if ($dataObj->third_3 == $participant_id) {
+                $dataObj->third_3 = 0;
+            }
         } elseif ($request->result == '4') {
             $dataObj->third_2 = $participant_id;
             $competitionPartModel->KATA_RES = 3;
@@ -527,6 +536,25 @@ class KataCompetitionBoutController extends Controller
             }
             if ($dataObj->third_1 == $participant_id) {
                 $dataObj->third_1 = 0;
+            }
+            if ($dataObj->third_3 == $participant_id) {
+                $dataObj->third_3 = 0;
+            }
+        } elseif ($request->result == '5') {
+            $dataObj->third_2 = $participant_id;
+            $competitionPartModel->KATA_RES = 3;
+
+            if ($dataObj->first == $participant_id) {
+                $dataObj->first = 0;
+            }
+            if ($dataObj->second == $participant_id) {
+                $dataObj->second = 0;
+            }
+            if ($dataObj->third_1 == $participant_id) {
+                $dataObj->third_1 = 0;
+            }
+            if ($dataObj->third_2 == $participant_id) {
+                $dataObj->third_2 = 0;
             }
         }
         $dataObj->save();

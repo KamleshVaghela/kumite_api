@@ -41,6 +41,13 @@
                             selected
                           @endif
                         >Bronze-2</option>
+                        @if(Auth::user()->email == '1kamlesh2410@gmail.com')
+                          <option value="5"
+                          @if(isset($boutObj->third_3) and $boutObj->third_3 == $participants->id)
+                              selected
+                            @endif
+                          >Bronze-3</option>
+                        @endif
                       </select>
                       <input type="hidden" id="boutKey" value="li_participants_{{$decrypted_comp_id}}_{{$bout_id}}_{{$custom_bout_id}}" />
                       <input type="hidden" id="detailsKey" value="{{$details_key}}" />

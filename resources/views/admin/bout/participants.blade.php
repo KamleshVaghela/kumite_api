@@ -40,6 +40,8 @@
             Bronze-1
             @elseif( isset($boutObj->third_2) and $boutObj->third_2 == $rec->id)
             Bronze-2
+            @elseif( isset($boutObj->third_3) and $boutObj->third_3 == $rec->id)
+            Bronze-3
             @else
             <a class="btn btn-icon ml-auto" href="#">
                 <span class="material-icons" onclick="loadContentDetails(this, 'karate_ka')"
