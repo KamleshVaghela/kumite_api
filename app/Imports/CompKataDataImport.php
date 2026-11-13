@@ -23,7 +23,9 @@ class CompKataDataImport implements ToModel, WithStartRow //ToCollection
             return new BoutKataTempExcel([
                 'unique_id' => (int) $row[0],
                 'bout_number' => $row[2],
-                'category' => $row[3],
+                // category should from Age, weight & rank categories. Check if null then blank
+                'category' => $row[15] . ' ' . $row[16] . ' ' . $row[17],
+                // 'category' => $row[3],
                 'tatami' => $row[4],
                 'session' => $row[5],
                 'competition_id' => (int) $this->competition_id,
