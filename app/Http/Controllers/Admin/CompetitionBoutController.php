@@ -199,6 +199,7 @@ class CompetitionBoutController extends Controller
 
         $participant = Participant::find($participant_id);
         $participant->gender = $request->gender;
+        $participant->mark_as_absent = $request->has('mark_as_absent') ? 1 : 0;
         $participant->save();
 
         return response([
@@ -939,6 +940,8 @@ class CompetitionBoutController extends Controller
         $fpdi->SetFont($font, $style, $fontsize - 4);
         $fpdi->Text($left_2, $top - 2, ucwords(strtolower($player_data->external_coach_name)));
         $fpdi->Text($left_2, $top + 2, ucwords(strtolower($player_data->team)));
+        //TBD other_team_name
+
         // $fpdi->Text($left_2 - 15,$top + 1,ucwords(strtolower($player_data->team)));
         // $this->print_text($fpdi, $left_1, $top, strtoupper($player_data["full_name"]), 15);
         // $this->print_text($fpdi, $left_2, $top, strtoupper($player_data["external_coach_name"]), 15);

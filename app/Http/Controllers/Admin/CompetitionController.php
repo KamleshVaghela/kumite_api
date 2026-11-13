@@ -219,7 +219,7 @@ class CompetitionController extends Controller
             ->where('KARATE_KA.KARATE_KA_ID', $competition_part->KARATE_KA_ID)
             ->select('KARATE_KA.*', DB::raw('KARATE_KA.TITLE'), DB::raw("IFNULL(KARATE_KA.NAME,'') AS NAME"), DB::raw("IFNULL(KARATE_KA.M_NAME,'') as M_NAME"), DB::raw("IFNULL(KARATE_KA.L_NAME,'') as L_NAME"),
                 'RANK_MST.RANK', 'RANK_MST.KYU',
-                'DOJO_MST.DOJO_NAME', 'SCHOOL_MASTER.SCHOOL_NAME',
+                'DOJO_MST.DOJO_NAME', 'SCHOOL_MASTER.SCHOOL_NAME','SCHOOL_MASTER.SHORT_NAME',
                 'COACH.COACH_NAME', 'COACH.COACH_CODE', 'DISTRICT_GEO.DISTRICT',
                 'X.NoOfPart', 'Y.NoOfYear')
             ->first();
@@ -233,12 +233,19 @@ class CompetitionController extends Controller
                 if ($competition->TYPE == 'ISC') {
                     //Inter School
                     $compParticipant->team = "$karateKa->SCHOOL_NAME";
+                    $compParticipant->other_team_name = "$karateKa->SHORT_NAME";
                 } elseif ($competition->TYPE == 'IDJ') {
                     //Inter Dojo
                     $compParticipant->team = "$karateKa->DOJO_NAME";
                 } elseif ($competition->TYPE == 'D') {
                     //District
-                    $compParticipant->team = "$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
+                    if(!empty($karateKa->DOJO_NAME)) {
+                        $compParticipant->team = "$karateKa->DOJO_NAME";
+                    } elseif(!empty($karateKa->SCHOOL_NAME)) {
+                        $compParticipant->team = "$karateKa->SCHOOL_NAME";
+                    } else {
+                        $compParticipant->team = "$karateKa->COACH_NAME ($karateKa->COACH_CODE)";
+                    }
                 } elseif ($competition->TYPE == 'ID') {
                     //District
                     $compParticipant->team = "$karateKa->DISTRICT | $karateKa->DOJO_NAME $karateKa->SCHOOL_NAME";
@@ -478,7 +485,6 @@ class CompetitionController extends Controller
         $compModel->save();
 
         return response([
-            'data' => $dataObj,
             'message' => 'Competition updated successfully',
             'alert-type' => 'success',
         ], 200);

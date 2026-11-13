@@ -26,6 +26,10 @@
                         <small id="gender_error" class="form-text post_error"></small>
                     </div>
                 </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="mark_as_absent" name="mark_as_absent" value="1" @if($participant->mark_as_absent) checked @endif>
+                    <label class="form-check-label" for="mark_as_absent">Mark as absent</label>
+                </div>
             </form>
         </div>
         <div class="modal-footer">
